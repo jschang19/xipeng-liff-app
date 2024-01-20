@@ -68,6 +68,11 @@ const qrCodeUrl = computed(() => {
 async function getScanAccess () {
   const cachedAccess = useNuxtData<{ hasAccess: boolean }>("hasAccess");
 
+  // if user is not logged in, no need to check
+  if (!liffStore.user) {
+    return;
+  }
+
   if (!cachedAccess.data.value) {
     const { data: accessResponse, error: accessError, pending } = await useFetch<{
   hasAccess: boolean;
