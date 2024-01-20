@@ -23,7 +23,7 @@ export default defineAuthEventHandler(async (event, user) => {
         id,
         line_id
       )`)
-    .eq("user.line_id", user.userId).maybeSingle();
+    .eq("user.line_id", user.userId);
 
   if (speakerUUIDError) {
     console.error(speakerUUIDError);
@@ -34,7 +34,7 @@ export default defineAuthEventHandler(async (event, user) => {
     };
   }
 
-  if (!speakerUUID) {
+  if (!speakerUUID || speakerUUID.length === 0) {
     setResponseStatus(event, 401);
     return {
       status: "error",
@@ -42,16 +42,16 @@ export default defineAuthEventHandler(async (event, user) => {
     };
   }
 
-  console.log(speakerUUID.user.id);
+  console.log(speakerUUID[0].user.id);
 
   const { error } = await supabaseService.from("speaker_profile").upsert({
-    user_id: speakerUUID.user.id,
+    user_id: speakerUUID[0].user.id,
     university_name: universityName,
     major_name: majorName,
     bio
   }, {
     onConflict: "user_id"
-  }).eq("user_id", speakerUUID.user.id);
+  }).eq("user_id", speakerUUID[0].user.id);
 
   if (error) {
     console.error(error);
