@@ -6,11 +6,11 @@
           <TabsContent value="account">
             <div class="flex-1 flex flex-col gap-1 items-center justify-center">
               <div class="text-2xl font-bold">
-                Your QR Code
+                你的 QR Code
               </div>
-              <NuxtImg :src="qrCodeUrl" />
+              <NuxtImg :src="qrCodeUrl" placeholder />
               <div class="text-gray-500">
-                請顯示此 QR Code 點名
+                請出示此 QR Code 給工作人員掃描
               </div>
             </div>
           </TabsContent>
@@ -37,9 +37,9 @@
           <div class="text-2xl font-bold">
             Your QR Code
           </div>
-          <NuxtImg :src="qrCodeUrl" />
+          <NuxtImg :src="qrCodeUrl" placeholder />
           <div class="text-gray-500">
-            請顯示此 QR Code 點名
+            請出示此 QR Code 給工作人員掃描
           </div>
         </div>
       </div>
@@ -62,7 +62,7 @@ const isLoading = ref(false);
 const accessPending = ref(false);
 
 const qrCodeUrl = computed(() => {
-  return `https://chart.apis.google.com/chart?cht=qr&choe=UTF-8&chs=350x350&chl=${liffStore.user ? liffStore.user.userId : ""}`;
+  return `https://chart.apis.google.com/chart?cht=qr&choe=UTF-8&chs=350x350&chl=${liffStore.user!.userId}`;
 });
 
 async function getScanAccess () {
