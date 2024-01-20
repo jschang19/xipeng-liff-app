@@ -5,13 +5,7 @@ import type { Profile } from "~/types";
 export const useLiffStore = defineStore("liff", () => {
   const isLoggedIn = ref<boolean>(false);
   const pending = ref<boolean>(true);
-  const user = ref<Profile>({
-    userId: "",
-    displayName: "",
-    pictureUrl: "",
-    email: null,
-    access: "user"
-  });
+  const user = ref<Profile | null>(null);
   const runtimeConfig = useRuntimeConfig();
   const liffId = runtimeConfig.public.LIFF_ID;
 
@@ -32,7 +26,7 @@ export const useLiffStore = defineStore("liff", () => {
     }
   }
 
-  async function setUser() {
+  async function setUser () {
     // upsert user and fetch user data from supabase at same time
     // to keep user data up to date
     const { data: upsertedUser, error } = await useFetch<{
@@ -58,6 +52,7 @@ export const useLiffStore = defineStore("liff", () => {
 
   function logout () {
     isLoggedIn.value = false;
+    user.value = null;
     liff.logout();
   }
 
@@ -76,7 +71,7 @@ export const useLiffStore = defineStore("liff", () => {
 
   function getIdToken () {
     if (!liff.isLoggedIn()) {
-      throw new Error("Not logged in");
+      return null;
     }
 
     return liff.getIDToken();
