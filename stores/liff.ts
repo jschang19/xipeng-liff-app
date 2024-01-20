@@ -48,7 +48,6 @@ export const useLiffStore = defineStore("liff", () => {
       throw error.value;
     }
 
-
     user.value = upsertedUser.value!.profile;
   }
 
@@ -97,5 +96,17 @@ export const useLiffStore = defineStore("liff", () => {
     return now < exp;
   }
 
-  return { isLoggedIn, initLiff, login, user, setUser, logout, getAccessToken, getIdToken, scanCode, pending, checkTokenValidity };
+  return {
+    isLoggedIn,
+    initLiff,
+    login,
+    user,
+    setUser,
+    logout,
+    getAccessToken,
+    getIdToken,
+    scanCode,
+    pending,
+    checkTokenValidity
+  };
 });
