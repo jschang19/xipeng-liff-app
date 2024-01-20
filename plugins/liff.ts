@@ -11,27 +11,30 @@ export default defineNuxtPlugin({
 
         if (!tokenValid) {
           liffStore.logout();
-          return;
+        } else {
+          await liffStore.setUser();
         }
-
-        await liffStore.setUser();
       }
 
       ;
     },
-    "page:finish": () => {
+    "page:finish": async () => {
       const liffStore = useLiffStore();
       const tokenValid = liffStore.checkTokenValidity();
 
       if (!tokenValid) {
         liffStore.logout();
-        navigateTo("/sign-in");
+        await navigateTo("/sign-in", {
+          replace: true
+        });
         return;
       }
 
       if (!liffStore.isLoggedIn) {
         console.log("not logged in");
-        navigateTo("/sign-in");
+        await navigateTo("/sign-in", {
+          replace: true
+        });
       }
     }
   }

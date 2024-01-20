@@ -27,10 +27,10 @@ export default defineAuthEventHandler(async (event, user) => {
   }
 
   if (!speakerResult || speakerResult.length === 0) {
-    setResponseStatus(event, 401);
     return {
-      status: "error",
-      message: "Not speaker"
+      university: null,
+      major: null,
+      bio: null
     };
   }
 

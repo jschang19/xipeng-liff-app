@@ -4,7 +4,10 @@
       <div class="py-4 text-2xl font-bold">
         個人資料
       </div>
-      <form v-if="isSpeaker" class="space-y-4" @submit="onSubmit">
+      <div v-if="pending" class="flex flex-col items-center justify-center h-full">
+        <Loader2 class="w-8 h-8 animate-spin" />
+      </div>
+      <form v-else-if="!pending && isSpeaker" class="space-y-4" @submit="onSubmit">
         <FormField v-slot="{ componentField }" name="university" :model-value="prefillData.university">
           <FormItem>
             <FormLabel>大學名稱</FormLabel>
@@ -46,6 +49,7 @@
   </div>
 </template>
 <script setup lang="ts">
+import { Loader2 } from "lucide-vue-next";
 import { toTypedSchema } from "@vee-validate/zod";
 import * as z from "zod";
 import { useForm } from "vee-validate";
@@ -57,12 +61,12 @@ useHead({
 });
 
 const liffStore = useLiffStore();
+const isSpeaker = ref(liffStore.user?.type.speaker);
 const formSchema = toTypedSchema(z.object({
   university: z.string().min(1).max(25),
   major: z.string().min(1).max(25),
   bio: z.string().min(2).max(150).optional()
 }));
-const isSpeaker = ref(liffStore.user?.type.speaker);
 const prefillData = ref({
   university: "",
   major: "",
@@ -70,6 +74,29 @@ const prefillData = ref({
 });
 
 const { toast } = useToast();
+
+if (!isSpeaker.value) {
+  await navigateTo("/", { replace: true });
+}
+
+const { pending } = await useFetch(
+  "/api/speakers/profile",
+  {
+    method: "GET",
+    headers: {
+      authorization: `${liffStore.getIdToken()}`
+    },
+    lazy: true,
+    onResponse: ({ response }) => {
+      prefillData.value = {
+        university: response._data.university,
+        major: response._data.major,
+        bio: response._data.bio
+      };
+    }
+  }
+);
+
 const form = useForm({
   validationSchema: formSchema
 });

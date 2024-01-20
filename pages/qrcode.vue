@@ -37,7 +37,7 @@
           <div class="text-2xl font-bold">
             Your QR Code
           </div>
-          <NuxtImg :src="qrCodeUrl" placeholder />
+          <NuxtImg :src="qrCodeUrl" class="w-32 h-32" width="350" height="350" preload />
           <div class="text-gray-500">
             請出示此 QR Code 給工作人員掃描
           </div>
