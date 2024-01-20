@@ -9,9 +9,11 @@
 
       <div class="grid grid-cols-4 gap-5">
         <Card v-for="link in navLinks" :key="link.title" class="flex aspect-square h-[4.5rem] shadow-none">
-          <div class="text-sm">
-            {{ link.title }}
-          </div>
+          <NuxtLink :to="link.href">
+            <div class="text-sm">
+              {{ link.title }}
+            </div>
+          </NuxtLink>
         </Card>
       </div>
     </div>
@@ -21,32 +23,24 @@
 <script setup lang="ts">
 import { useLiffStore } from "~/stores/liff";
 const liffStore = useLiffStore();
+const isSpeaker = ref(liffStore.user!.type.speaker);
 
 useHead({
   title: "活動連結"
 });
 
-const navLinks = [
-  {
-    title: "議程表",
-    href: "/schedule"
-  },
-  {
-    title: "會場地圖",
-    href: "/map"
-  },
-  {
-    title: "我的條碼",
-    href: "/qrcode"
-  },
-  {
-    title: "參與者大調查",
-    href: "/survey"
-  },
-  {
-    title: "工作人員",
-    href: "/staff"
-  }
-];
+const navLinks = ref([{
+  title: "活動議程",
+  href: "/agenda"
+}, {
+  title: "活動 QR Code",
+  href: "/qrcode"
+}]);
 
+if (isSpeaker.value) {
+  navLinks.value.push({
+    title: "個人資料",
+    href: "/profile"
+  });
+}
 </script>

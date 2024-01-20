@@ -32,6 +32,7 @@ export const useLiffStore = defineStore("liff", () => {
     const { data: upsertedUser, error } = await useFetch<{
       profile: Profile;
     }>("/api/user", {
+      key: "user",
       method: "POST",
       headers: {
         authorization: `${liff.getIDToken()}}`
