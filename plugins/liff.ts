@@ -11,7 +11,6 @@ export default defineNuxtPlugin({
 
         if (!tokenValid) {
           liffStore.logout();
-          navigateTo("/sign-in");
           return;
         }
 
