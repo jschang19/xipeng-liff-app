@@ -1,0 +1,46 @@
+{
+  "name": "liff-starter-nuxtjs",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare",
+    "lint": "eslint ."
+  },
+  "devDependencies": {
+    "@line/liff": "^2.23.0",
+    "@nuxt/devtools": "latest",
+    "@nuxtjs/eslint-config-typescript": "^12.1.0",
+    "@nuxtjs/supabase": "^1.1.5",
+    "@nuxtjs/tailwindcss": "^6.10.3",
+    "dayjs-nuxt": "^2.1.9",
+    "eslint": "^8.56.0",
+    "nuxt": "^3.8.2",
+    "shadcn-nuxt": "^0.1.0",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "@heroicons/vue": "^2.1.1",
+    "@jschang19/ntu-studentid-lookup": "^2.0.2",
+    "@nuxt/image": "^1.1.0",
+    "@pinia/nuxt": "^0.5.1",
+    "@popperjs/core": "^2.11.8",
+    "@radix-icons/vue": "^1.0.0",
+    "@vee-validate/zod": "^4.12.4",
+    "@vueuse/core": "^10.7.1",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.0.0",
+    "lucide-vue-next": "^0.303.0",
+    "ntu-studentid-lookup": "^2.0.1",
+    "pinia": "^2.1.7",
+    "radix-vue": "^1.2.5",
+    "tailwind-merge": "^2.2.0",
+    "tailwindcss-animate": "^1.0.7",
+    "v-calendar": "^3.1.2",
+    "vee-validate": "^4.12.4",
+    "zod": "^3.22.4"
+  }
+}
