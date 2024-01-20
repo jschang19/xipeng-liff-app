@@ -6,6 +6,7 @@
   },
   "ignorePatterns": [
     "/components/ui/**/*.vue",
+    "/components/ui/**/*.ts",
     "/utils.ts"
   ],
   "extends": ["@nuxtjs/eslint-config-typescript"],
