@@ -22,6 +22,16 @@
 import { useLiffStore } from "~/stores/liff";
 const liffStore = useLiffStore();
 
+useHead({
+  title: "登入"
+});
+
+useSeoMeta({
+  title: "登入",
+  description: "登入",
+  robots: "noindex nofollow"
+});
+
 watch(() => liffStore.isLoggedIn, () => {
   if (liffStore.isLoggedIn) {
     navigateTo("/");

@@ -55,6 +55,10 @@
 import { Loader2 } from "lucide-vue-next";
 import { useLiffStore } from "~/stores/liff";
 
+useHead({
+  title: "集章冊"
+});
+
 interface Booth {
   id: string;
   name: string;

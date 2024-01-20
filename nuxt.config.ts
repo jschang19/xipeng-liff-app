@@ -1,13 +1,11 @@
-// this import can be removed if you don't need to display the version on the page
-import pkg from "./package.json";
-
 export default defineNuxtConfig({
   ssr: false,
   app: {
     head: {
-      title: "LIFF Starter",
+      title: "攜澎引盼 2024 活動網站",
+      titleTemplate: "%s - 攜澎引盼 2024",
       htmlAttrs: {
-        lang: "en"
+        lang: "zh-Hant-TW"
       },
       meta: [
         { charset: "utf-8" },
@@ -31,8 +29,7 @@ export default defineNuxtConfig({
   plugins: [],
   runtimeConfig: {
     public: {
-      LIFF_ID: process.env.LIFF_ID,
-      VERSION: pkg.version || "0.1.0"
+      LIFF_ID: process.env.LIFF_ID
     },
     CLIENT_ID: process.env.CLIENT_ID
   },
@@ -43,6 +40,6 @@ export default defineNuxtConfig({
   supabase: {
     url: process.env.SUPABASE_URL,
     key: process.env.SUPABASE_KEY,
-    redirect: false
+    redirect: false // disable default redirect
   }
 });

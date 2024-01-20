@@ -56,6 +56,10 @@ import { useToast } from "~/components/ui/toast/use-toast";
 import { useLiffStore } from "~/stores/liff";
 const { toast } = useToast();
 
+useHead({
+  title: "活動 QR Code"
+});
+
 const liffStore = useLiffStore();
 const hasScanAccess = ref(false);
 const isLoading = ref(false);

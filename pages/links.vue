@@ -22,6 +22,10 @@
 import { useLiffStore } from "~/stores/liff";
 const liffStore = useLiffStore();
 
+useHead({
+  title: "活動連結"
+});
+
 const navLinks = [
   {
     title: "議程表",

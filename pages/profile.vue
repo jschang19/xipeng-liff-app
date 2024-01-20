@@ -56,6 +56,10 @@ import { useForm } from "vee-validate";
 import { useToast } from "~/components/ui/toast";
 import { useLiffStore } from "~/stores/liff";
 
+useHead({
+  title: "個人資料"
+});
+
 const liffStore = useLiffStore();
 const formSchema = toTypedSchema(z.object({
   university: z.string().min(1).max(25),

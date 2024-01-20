@@ -37,6 +37,10 @@ import { useDayjs } from "#dayjs";
 import { Loader2 } from "lucide-vue-next";
 import { useLiffStore } from "~/stores/liff";
 
+useHead({
+  title: "活動議程"
+});
+
 interface Event {
   id: string;
     title: string;
