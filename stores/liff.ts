@@ -39,11 +39,17 @@ export const useLiffStore = defineStore("liff", () => {
       pick: ["profile"]
     });
 
-    if (error.value || !upsertedUser.value) {
-      throw error;
+    if (error.value) {
+      if (error.value.statusCode === 401) {
+        logout();
+        return;
+      }
+
+      throw error.value;
     }
 
-    user.value = upsertedUser.value.profile;
+
+    user.value = upsertedUser.value!.profile;
   }
 
   function login () {

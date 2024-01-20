@@ -6,10 +6,19 @@ export default defineNuxtPlugin({
       const liffStore = useLiffStore();
       await liffStore.initLiff();
 
-      // upsert user into supabase when app is created
       if (liffStore.isLoggedIn) {
+        const tokenValid = liffStore.checkTokenValidity();
+
+        if (!tokenValid) {
+          liffStore.logout();
+          navigateTo("/sign-in");
+          return;
+        }
+
         await liffStore.setUser();
       }
+
+      ;
     },
     "page:finish": () => {
       const liffStore = useLiffStore();
