@@ -6,9 +6,10 @@ export default defineAuthEventHandler(async (event, user) => {
   const supabaseService = serverSupabaseServiceRole<Database>(event);
   const { data: upsertedUser, error } = await supabaseService.from("user").upsert({
     line_id: user.userId,
-    display_name: user.displayName
+    display_name: user.displayName,
+    email: user.email
   }, {
-    onConflict: "line_id"
+    onConflict: "line_id,display_name,email"
   }).select().single();
 
   if (error) {
@@ -17,6 +18,12 @@ export default defineAuthEventHandler(async (event, user) => {
 
   return {
     status: "ok",
-    profile: upsertedUser
+    profile: {
+      userId: upsertedUser.line_id,
+      displayName: upsertedUser.display_name,
+      pictureUrl: upsertedUser.picture_url,
+      email: upsertedUser.email,
+      access: upsertedUser.access
+    }
   };
 });
