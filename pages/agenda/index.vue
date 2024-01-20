@@ -20,7 +20,7 @@
                 </div>
               </div>
               <NuxtLink :to="`/event/${event.id}`" class="block">
-                <h2 class="text-xl">
+                <h2 class="text-lg">
                   {{ event.title }}
                 </h2>
               </NuxtLink>
