@@ -1,0 +1,68 @@
+import { serverSupabaseServiceRole } from "#supabase/server";
+import type { Database } from "~/types/database";
+
+export default defineAuthEventHandler(async (event, user) => {
+  const supabaseService = serverSupabaseServiceRole<Database>(event);
+  const { university: universityName, major: majorName, bio } = await readBody(event);
+
+  if (!universityName || !majorName) {
+    setResponseStatus(event, 400);
+    return {
+      status: "error",
+      message: "Bad request"
+    };
+  }
+
+  ;
+
+  const { data: speakerUUID, error: speakerUUIDError } = await supabaseService
+    .from("event_speaker")
+    .select(`
+      *,
+      user(
+        id,
+        line_id
+      )`)
+    .eq("user.line_id", user.userId).maybeSingle();
+
+  if (speakerUUIDError) {
+    console.error(speakerUUIDError);
+    setResponseStatus(event, 500);
+    return {
+      status: "error",
+      message: "Internal server error"
+    };
+  }
+
+  if (!speakerUUID) {
+    setResponseStatus(event, 401);
+    return {
+      status: "error",
+      message: "Not speaker"
+    };
+  }
+
+  console.log(speakerUUID.user.id);
+
+  const { error } = await supabaseService.from("speaker_profile").upsert({
+    user_id: speakerUUID.user.id,
+    university_name: universityName,
+    major_name: majorName,
+    bio
+  }, {
+    onConflict: "user_id"
+  }).eq("user_id", speakerUUID.user.id);
+
+  if (error) {
+    console.error(error);
+    setResponseStatus(event, 500);
+    return {
+      status: "error",
+      message: "Internal server error"
+    };
+  }
+
+  return {
+    status: "ok"
+  };
+});
