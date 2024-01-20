@@ -10,17 +10,14 @@
             透過參與下午場博覽會攤位的活動，可以獲得對應的章，集滿 16 個章後，即可獲得獎勵。
           </div>
         </div>
-        <div class="text-xl text-center">
-          目前獲得 0 點
+      </div>
+      <div v-if="boothPending" class="py-10">
+        <div class="flex flex-col flex-1 items-center justify-center">
+          <Loader2 class="w-8 h-8 text-black animate-spin" />
         </div>
       </div>
-      <Dialog>
-        <div v-if="boothPending" class="py-10">
-          <div class="flex flex-col flex-1 items-center justify-center">
-            <Loader2 class="w-8 h-8 text-black animate-spin" />
-          </div>
-        </div>
-        <div v-else class="grid grid-cols-4 place-items-center rounded-lg border-2">
+      <div v-else class="grid grid-cols-4 place-items-center rounded-lg border-2">
+        <Dialog>
           <div v-for="booth in booths" :key="booth.id" class="w-full h-full flex items-center justify-cente aspect-squarer relative">
             <DialogTrigger @click="handleTriggered(booth.id)">
               <div v-if="booth.hasStamp" class="absolute inset-0 flex items-center justify-center">
@@ -29,7 +26,7 @@
                 </div>
               </div>
               <div class="h-full flex flex-col justify-between p-2" :class="booth.hasStamp && `opacity-15`">
-                <NuxtImg src="https://fakeimg.pl/300x300" />
+                <NuxtImg src="https://fakeimg.pl/300x300" width="90" height="90" class="h-16 w-16" />
               </div>
             </DialogTrigger>
           </div>
@@ -48,8 +45,8 @@
               </DialogClose>
             </DialogFooter>
           </DialogContent>
-        </div>
-      </Dialog>
+        </Dialog>
+      </div>
     </div>
   </div>
 </template>
