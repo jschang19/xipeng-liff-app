@@ -1,4 +1,3 @@
-import liff from "@line/liff";
 import { useLiffStore } from "~/stores/liff";
 export default defineNuxtPlugin({
   name: "liff",
@@ -9,23 +8,7 @@ export default defineNuxtPlugin({
 
       // upsert user into supabase when app is created
       if (liffStore.isLoggedIn) {
-        // await useFetch("/api/user", {
-        //   method: "POST",
-        //   headers: {
-        //     authorization: `${liffStore.getIdToken()}`
-        //   }
-        // });
-        // await liffStore.fetchUser();
-
-        await Promise.all([
-          useFetch("/api/user", {
-            method: "POST",
-            headers: {
-              authorization: `${liffStore.getIdToken()}`
-            }
-          }),
-          liffStore.fetchUser()
-        ]);
+        liffStore.setUser();
       }
     },
     "page:finish": () => {
