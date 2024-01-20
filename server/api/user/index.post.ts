@@ -9,7 +9,7 @@ export default defineAuthEventHandler(async (event, user) => {
     display_name: user.displayName,
     email: user.email
   }, {
-    onConflict: "line_id,display_name,email"
+    onConflict: "line_id"
   }).select().single();
 
   if (error) {
