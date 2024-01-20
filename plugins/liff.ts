@@ -8,7 +8,7 @@ export default defineNuxtPlugin({
 
       // upsert user into supabase when app is created
       if (liffStore.isLoggedIn) {
-        liffStore.setUser();
+        await liffStore.setUser();
       }
     },
     "page:finish": () => {
