@@ -4,6 +4,10 @@
     "es2021": true,
     "node": true
   },
+  "ignorePatterns": [
+    "/components/ui/**/*.vue",
+    "/utils.ts"
+  ],
   "extends": ["@nuxtjs/eslint-config-typescript"],
   "rules": {
     "quotes": ["error", "double"],
