@@ -1,5 +1,5 @@
 <template>
-  <div class="h-full w-full flex flex-col px-6 justify-center items-center">
+  <div v-if="liffStore.user" class="h-full w-full flex flex-col px-6 justify-center items-center">
     <div class="h-full max-w-md w-full py-8">
       <div class="text-2xl py-4 font-bold">
         今日議程
@@ -31,6 +31,8 @@
 
 <script setup lang="ts">
 import { useDayjs } from "#dayjs";
+import { useLiffStore } from "~/stores/liff";
+
 interface Event {
   id: string;
     title: string;
@@ -41,6 +43,7 @@ interface Event {
     }
 };
 
+const liffStore = useLiffStore();
 const dayjs = useDayjs();
 const events: Event[] = [
   {

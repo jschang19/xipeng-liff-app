@@ -1,5 +1,5 @@
 <template>
-  <div class="h-full w-full py-8 flex flex-col justify-center items-center px-6">
+  <div v-if="liffStore.user" class="h-full w-full py-8 flex flex-col justify-center items-center px-6">
     <div class="h-full max-w-md w-full flex flex-col">
       <div v-if="!accessPending" class="flex-1 flex flex-col items-center justify-center w-full">
         <Tabs v-if="hasScanAccess" default-value="account" class="mx-auto">
@@ -62,7 +62,7 @@ const isLoading = ref(false);
 const accessPending = ref(false);
 
 const qrCodeUrl = computed(() => {
-  return `https://chart.apis.google.com/chart?cht=qr&choe=UTF-8&chs=350x350&chl=${liffStore.user.userId}`;
+  return `https://chart.apis.google.com/chart?cht=qr&choe=UTF-8&chs=350x350&chl=${liffStore.user ? liffStore.user.userId : ""}`;
 });
 
 async function getScanAccess () {

@@ -1,5 +1,5 @@
 <template>
-  <div class="h-full w-full flex flex-col justify-center items-center px-6">
+  <div v-if="liffStore.user" class="h-full w-full flex flex-col justify-center items-center px-6">
     <div class="flex flex-col space-y-6 h-full max-w-md w-full py-8">
       <div class="flex flex-col gap-8 py-4">
         <div class="space-y-3">
