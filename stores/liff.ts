@@ -32,22 +32,24 @@ export const useLiffStore = defineStore("liff", () => {
     }
   }
 
-  // Fetch additional user information from API
-  async function fetchUser () {
-    try {
-      const { data: profileInfo } = await useFetch<Profile>("/api/user/info", {
-        method: "GET",
-        headers: {
-          authorization: liff.getIDToken() as string
-        }
-      });
+  async function setUser() {
+    // upsert user and fetch user data from supabase at same time
+    // to keep user data up to date
+    const { data: upsertedUser, error } = await useFetch<{
+      profile: Profile;
+    }>("/api/user", {
+      method: "POST",
+      headers: {
+        authorization: `${liff.getIDToken()}}`
+      },
+      pick: ["profile"]
+    });
 
-      if (profileInfo.value) {
-        user.value = profileInfo.value;
-      }
-    } catch (error) {
-      console.error("Error fetching additional user info:", error);
+    if (error.value || !upsertedUser.value) {
+      throw error;
     }
+
+    user.value = upsertedUser.value.profile;
   }
 
   function login () {
@@ -94,5 +96,5 @@ export const useLiffStore = defineStore("liff", () => {
     return now < exp;
   }
 
-  return { isLoggedIn, initLiff, login, user, fetchUser, logout, getAccessToken, getIdToken, scanCode, pending, checkTokenValidity };
+  return { isLoggedIn, initLiff, login, user, setUser, logout, getAccessToken, getIdToken, scanCode, pending, checkTokenValidity };
 });
