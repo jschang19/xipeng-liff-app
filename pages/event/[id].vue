@@ -21,38 +21,52 @@
         <EventInfoBlock label="時間" :value="formatTimeRange(event.info.startAt, event.info.endAt)" :icon="ClockIcon" />
         <EventInfoBlock label="地點" :value="event.info.place" :icon="SewingPinIcon" />
       </div>
-      <div class="space-y-3">
-        <div class="text-lg font-bold">
-          講者
+      <div class="flex flex-col gap-6">
+        <div class="space-y-2">
+          <div class="text-lg font-bold">
+            講者
+          </div>
+          <div class="grid grid-cols-4 gap-1">
+            <div v-for="speaker in event.speakers" :key="speaker.name">
+              <Dialog>
+                <DialogTrigger>
+                  <div class="flex flex-col items-center space-y-2">
+                    <Avatar class="w-12 h-12">
+                      <AvatarImage :src="speaker.pictureUrl" />
+                      <AvatarFallback>{{ speaker.name.substring(0,1) }}</AvatarFallback>
+                    </Avatar>
+                    <div class="text-md">
+                      {{ speaker.name }}
+                    </div>
+                  </div>
+                </DialogTrigger>
+                <DialogContent>
+                  <div class="space-y-1">
+                    <DialogTitle>
+                      <div class="text-lg font-bold">
+                        {{ speaker.name }}
+                      </div>
+                    </DialogTitle>
+                    <DialogDescription class="space-y-2">
+                      <div class="text-sm text-slate-500">
+                        {{ speaker.universityName }} {{ speaker.majorName }}
+                      </div>
+                      <div class="text-sm text-black">
+                        {{ speaker.bio ?? "這位講者很神秘，沒有留下任何自介" }}
+                      </div>
+                    </DialogDescription>
+                  </div>
+                </DialogContent>
+              </Dialog>
+            </div>
+          </div>
         </div>
-        <div class="grid grid-cols-4 gap-1">
-          <div v-for="speaker in event.speakers" :key="speaker.name">
-            <Dialog>
-              <DialogTrigger>
-                <div class="flex flex-col items-center space-y-2">
-                  <Avatar class="w-12 h-12">
-                    <AvatarImage :src="speaker.pictureUrl" />
-                    <AvatarFallback>{{ speaker.name.substring(0,1) }}</AvatarFallback>
-                  </Avatar>
-                  <div class="text-md">
-                    {{ speaker.name }}
-                  </div>
-                </div>
-              </DialogTrigger>
-              <DialogContent>
-                <div class="space-y-1">
-                  <div class="text-lg font-bold">
-                    {{ speaker.name }}
-                  </div>
-                  <div class="text-sm text-slate-500">
-                    {{ speaker.universityName }} {{ speaker.majorName }}
-                  </div>
-                  <div class="text-sm">
-                    {{ speaker.bio ?? "這位講者很神秘，沒有留下任何自介" }}
-                  </div>
-                </div>
-              </DialogContent>
-            </Dialog>
+        <div class="space-y-2">
+          <div class="text-lg font-bold">
+            議程簡介
+          </div>
+          <div class="text-sm">
+            {{ event.info.description ?? "這個活動很神秘，沒有留下任何說明" }}
           </div>
         </div>
       </div>
@@ -70,6 +84,7 @@ interface Event {
   id: string;
   info: {
     title: string;
+    description?: string;
     place: string;
     startAt: number;
     endAt: number;
@@ -110,6 +125,20 @@ const { error: eventError, pending } = await useFetch<{
     // set event
     event.value = response._data;
   }
+});
+
+const pageTitle = computed(() => {
+  return event.value?.info.title ?? "活動";
+});
+
+useHead({
+  title: pageTitle,
+  meta: [
+    {
+      name: "description",
+      content: event.value?.info.description ?? "這個活動很神秘，沒有留下任何說明"
+    }
+  ]
 });
 
 function formatTime (unix: number) {
