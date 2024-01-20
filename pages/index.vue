@@ -67,19 +67,19 @@ interface Booth {
 }
 
 const liffStore = useLiffStore();
+const booths = ref<Booth[]>();
 
-const { data: boothResponse, pending: boothPending } = await useFetch<{
+const { pending: boothPending } = await useFetch<{
   booths: Booth[];
 }>("/api/booths", {
   headers: {
     Authorization: `${liffStore.getIdToken()}`
   },
   lazy: true,
-  pick: ["booths"]
-});
-
-const booths = computed(() => {
-  return boothResponse.value?.booths;
+  pick: ["booths"],
+  onResponse: ({ response }) => {
+    booths.value = response._data.booths;
+  }
 });
 
 const triggeredId = ref("");
@@ -91,7 +91,6 @@ const triggered = computed(() => {
 });
 
 function handleTriggered (id: string) {
-  console.log(id);
   triggeredId.value = id;
 }
 
