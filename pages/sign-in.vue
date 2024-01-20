@@ -22,6 +22,10 @@
 import { useLiffStore } from "~/stores/liff";
 const liffStore = useLiffStore();
 
+definePageMeta({
+  layout: "signin"
+});
+
 useHead({
   title: "登入"
 });
