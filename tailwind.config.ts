@@ -1,9 +1,8 @@
-const animate = require("tailwindcss-animate");
+import { type Config } from "tailwindcss";
+import animate from "tailwindcss-animate";
 
-/** @type {import('tailwindcss').Config} */
-module.exports = {
+export default <Partial<Config>> {
   darkMode: ["class"],
-
   theme: {
     container: {
       center: true,
@@ -55,20 +54,20 @@ module.exports = {
       },
       keyframes: {
         "accordion-down": {
-          from: { height: 0 },
+          from: { height: "0" },
           to: { height: "var(--radix-accordion-content-height)" }
         },
         "accordion-up": {
           from: { height: "var(--radix-accordion-content-height)" },
-          to: { height: 0 }
+          to: { height: "0" }
         },
         "collapsible-down": {
-          from: { height: 0 },
+          from: { height: "0" },
           to: { height: "var(--radix-collapsible-content-height)" }
         },
         "collapsible-up": {
           from: { height: "var(--radix-collapsible-content-height)" },
-          to: { height: 0 }
+          to: { height: "0" }
         }
       },
       animation: {
