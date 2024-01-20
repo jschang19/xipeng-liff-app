@@ -18,15 +18,15 @@
       </div>
       <div v-else class="grid grid-cols-4 place-items-center rounded-lg border-2">
         <Dialog>
-          <div v-for="booth in booths" :key="booth.id" class="w-full h-full flex items-center justify-cente aspect-squarer relative">
+          <div v-for="booth in booths" :key="booth.id" class="flex items-center justify-center relative">
             <DialogTrigger @click="handleTriggered(booth.id)">
               <div v-if="booth.hasStamp" class="absolute inset-0 flex items-center justify-center">
                 <div class="font-bold">
                   已簽到
                 </div>
               </div>
-              <div class="h-full flex flex-col justify-between p-2" :class="booth.hasStamp && `opacity-15`">
-                <NuxtImg src="https://fakeimg.pl/300x300" width="90" height="90" class="h-16 w-16" />
+              <div class="h-full w-full flex flex-col justify-between p-2" :class="booth.hasStamp && `opacity-15`">
+                <NuxtImg src="https://fakeimg.pl/300x300" width="100" height="100" class="w-18 h-18" />
               </div>
             </DialogTrigger>
           </div>
@@ -34,14 +34,18 @@
             <DialogHeader>
               <DialogTitle>{{ triggeredBooth!.name }}</DialogTitle>
             </DialogHeader>
-            <div class="flex items-center space-x-2">
-              {{ triggeredBooth!.description }}
-            </div>
+            <DialogDescription>
+              <div class="flex items-center space-x-2">
+                {{ triggeredBooth!.description }}
+              </div>
+            </DialogDescription>
             <DialogFooter v-if="triggered" class="sm:justify-start">
               <DialogClose as-child>
-                <Button type="button" variant="link" :onclick="triggeredBooth!.link">
-                  前往網站
-                </Button>
+                <NuxtLink v-show="triggeredBooth!.link" :to="triggeredBooth!.link + '?openExternalBrowser=1'" class="mx-auto" target="_blank">
+                  <Button type="button" variant="link">
+                    前往網站
+                  </Button>
+                </NuxtLink>
               </DialogClose>
             </DialogFooter>
           </DialogContent>
