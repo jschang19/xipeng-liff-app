@@ -54,18 +54,26 @@
 import { Camera, Loader2 } from "lucide-vue-next";
 import { useToast } from "~/components/ui/toast/use-toast";
 import { useLiffStore } from "~/stores/liff";
-const liffStore = useLiffStore();
 const { toast } = useToast();
+
+const liffStore = useLiffStore();
+const hasScanAccess = ref(false);
 const isLoading = ref(false);
+const accessPending = ref(false);
 
 const qrCodeUrl = computed(() => {
   return `https://chart.apis.google.com/chart?cht=qr&choe=UTF-8&chs=350x350&chl=${liffStore.user.userId}`;
 });
 
-const { data: hasAccess, error: accessError, pending: accessPending } = useFetch<{
+async function getScanAccess () {
+  const cachedAccess = useNuxtData<{ hasAccess: boolean }>("hasAccess");
+
+  if (!cachedAccess.data.value) {
+    const { data: accessResponse, error: accessError, pending } = await useFetch<{
   hasAccess: boolean;
 }>("/api/booths/staff", {
   method: "GET",
+  key: "hasAccess",
   headers: {
     authorization: `${liffStore.getIdToken()}`
   },
@@ -73,9 +81,27 @@ const { data: hasAccess, error: accessError, pending: accessPending } = useFetch
   lazy: true
 });
 
-const hasScanAccess = computed(() => {
-  return hasAccess.value?.hasAccess;
-});
+    watchEffect(() => {
+      accessPending.value = pending.value;
+
+      if (accessError.value) {
+        toast({
+          title: "取得權限時發生錯誤",
+          description: "請查看 console 錯誤訊息"
+        });
+      }
+
+      if (accessResponse.value) {
+        hasScanAccess.value = accessResponse.value!.hasAccess;
+      }
+    });
+  } else {
+    // set the value from cache
+    hasScanAccess.value = cachedAccess.data.value!.hasAccess;
+  }
+}
+
+await getScanAccess();
 
 async function handleScanCode () {
   const result = await liffStore.scanCode();
@@ -115,4 +141,5 @@ async function handleScanCode () {
     description: `已成功掃描 QR Code ${result}`
   });
 }
+
 </script>
