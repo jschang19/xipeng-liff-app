@@ -7,6 +7,7 @@ export default defineAuthEventHandler(async (event, user) => {
   const { data: upsertedUser, error } = await supabaseService.from("user").upsert({
     line_id: user.userId,
     display_name: user.displayName,
+    picture_url: user.pictureUrl,
     email: user.email
   }, {
     onConflict: "line_id"
