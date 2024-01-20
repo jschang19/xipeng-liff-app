@@ -1,7 +1,5 @@
 import { type EventHandler, type EventHandlerRequest, H3Event } from "h3";
-import { serverSupabaseServiceRole } from "#supabase/server";
 import type { Profile } from "~/types";
-import type { Database } from "~/types/database";
 export const defineAuthEventHandler = <T extends EventHandlerRequest, D> (
   handler: (event: H3Event, user: Profile) => Promise<D>
 ): EventHandler<T, D> =>

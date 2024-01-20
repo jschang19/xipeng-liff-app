@@ -1,7 +1,7 @@
 import { serverSupabaseServiceRole } from "#supabase/server";
 import type { Database } from "~/types/database";
 
-export default defineAuthEventHandler(async (event, user) => {
+export default defineAuthEventHandler(async (event, _) => {
   const supabaseService = serverSupabaseServiceRole<Database>(event);
   const now = new Date();
   // get training session for today and created_by, user are same department

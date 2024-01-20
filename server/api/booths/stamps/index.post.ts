@@ -14,13 +14,11 @@ export default defineAuthEventHandler(async (event, user) => {
     };
   }
 
-  console.log(participantId);
-
   const supabaseService = serverSupabaseServiceRole<Database>(event);
   const [{
     data: participantUUID,
     error: participantUUIDError
-  },{
+  }, {
     data: staffRecord,
     error: staffRecordError
   }] = await Promise.all([
@@ -57,9 +55,6 @@ export default defineAuthEventHandler(async (event, user) => {
       message: "Participant not found"
     };
   }
-
-  console.log(staffRecord);
-  console.log(participantUUID);
 
   // add stamp data to supabase
   const { error: stampError } = await supabaseService.from("stamp").upsert({ user_id: participantUUID.id, booth_id: staffRecord.booth_id }, {
