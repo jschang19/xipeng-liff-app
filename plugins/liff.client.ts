@@ -1,36 +1,38 @@
-import { useLiffStore } from "~/stores/liff";
 export default defineNuxtPlugin({
   name: "liff",
+  enforce: "pre",
   hooks: {
     "app:created": async () => {
-      const liffStore = useLiffStore();
-      await liffStore.initLiff();
+      const liff = useLiff();
+      await liff.init();
 
-      if (liffStore.isLoggedIn) {
-        const tokenValid = liffStore.checkTokenValidity();
+      if (liff.isLoggedIn) {
+        const tokenValid = liff.checkTokenValidity();
 
         if (!tokenValid) {
-          liffStore.logout();
+          const nuxtApp = useNuxtApp();
+          liff.logout();
+          nuxtApp.$router.replace("/sign-in");
         } else {
-          await liffStore.setUser();
+          await liff.setUser();
         }
       }
 
       ;
     },
     "page:finish": async () => {
-      const liffStore = useLiffStore();
-      const tokenValid = liffStore.checkTokenValidity();
+      const liff = useLiff();
+      const tokenValid = liff.checkTokenValidity();
 
       if (!tokenValid) {
-        liffStore.logout();
+        liff.logout();
         await navigateTo("/sign-in", {
           replace: true
         });
         return;
       }
 
-      if (!liffStore.isLoggedIn) {
+      if (!liff.isLoggedIn) {
         console.log("not logged in");
         await navigateTo("/sign-in", {
           replace: true
