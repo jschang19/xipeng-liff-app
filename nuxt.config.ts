@@ -43,5 +43,17 @@ export default defineNuxtConfig({
     url: process.env.SUPABASE_URL,
     key: process.env.SUPABASE_KEY,
     redirect: false // disable default redirect
+  },
+  nitro: {
+    compressPublicAssets: true,
+    storage: {
+      redis: {
+        driver: "redis",
+        host: process.env.REDIS_HOST,
+        port: process.env.REDIS_PORT,
+        password: process.env.REDIS_PASSWORD,
+        ttl: 60 * 10 // 3 minutes
+      }
+    }
   }
 });
