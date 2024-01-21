@@ -25,9 +25,6 @@ export default defineNuxtConfig({
     "@nuxt/image",
     "dayjs-nuxt"
   ],
-  plugins: [
-    { src: "~/plugins/liff.ts", mode="client"}
-  ],
   runtimeConfig: {
     public: {
       LIFF_ID: process.env.LIFF_ID
