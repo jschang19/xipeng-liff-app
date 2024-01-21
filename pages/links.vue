@@ -1,5 +1,5 @@
 <template>
-  <div v-if="liffStore.user" class="h-full w-full py-8 flex flex-col justify-center items-center px-6">
+  <div class="h-full w-full py-8 flex flex-col justify-center items-center px-6">
     <div class="h-full max-w-md w-full space-y-3">
       <div class="py-4">
         <div class="text-2xl font-bold">
@@ -21,9 +21,8 @@
 </template>
 
 <script setup lang="ts">
-import { useLiffStore } from "~/stores/liff";
-const liffStore = useLiffStore();
-const isSpeaker = ref(liffStore.user!.type.speaker);
+const liff = useLiff();
+const isSpeaker = ref(liff.user!.type.speaker);
 
 useHead({
   title: "活動連結"

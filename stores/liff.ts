@@ -2,17 +2,14 @@ import { defineStore } from "pinia";
 import { liff } from "@line/liff";
 import type { Profile } from "~/types";
 
-export const useLiffStore = defineStore("liff", () => {
+export const useLiff = defineStore("liff", () => {
   const isLoggedIn = ref<boolean>(false);
-  const pending = ref<boolean>(true);
   const user = ref<Profile | null>(null);
   const runtimeConfig = useRuntimeConfig();
   const liffId = runtimeConfig.public.LIFF_ID;
 
   // Initialize LIFF SDK
-  async function initLiff () {
-    pending.value = true;
-
+  async function init () {
     if (!liffId) {
       throw new Error("Please set LIFF_ID in .env file");
     }
@@ -68,18 +65,10 @@ export const useLiffStore = defineStore("liff", () => {
   }
 
   function getAccessToken () {
-    if (!liff.isLoggedIn()) {
-      throw new Error("Not logged in");
-    }
-
     return liff.getAccessToken();
   }
 
   function getIdToken () {
-    if (!liff.isLoggedIn()) {
-      return null;
-    }
-
     return liff.getIDToken();
   }
 
@@ -99,7 +88,7 @@ export const useLiffStore = defineStore("liff", () => {
 
   return {
     isLoggedIn,
-    initLiff,
+    init,
     login,
     user,
     setUser,
@@ -107,7 +96,6 @@ export const useLiffStore = defineStore("liff", () => {
     getAccessToken,
     getIdToken,
     scanCode,
-    pending,
     checkTokenValidity
   };
 });

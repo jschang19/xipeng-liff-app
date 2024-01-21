@@ -78,7 +78,6 @@
 import { ClockIcon, SewingPinIcon } from "@radix-icons/vue";
 import dayjs from "dayjs";
 import { Loader2 } from "lucide-vue-next";
-import { useLiffStore } from "~/stores/liff";
 
 interface Event {
   id: string;
@@ -100,7 +99,7 @@ interface Event {
 
 const route = useRoute();
 const event = ref<Event | null>(null);
-const liffStore = useLiffStore();
+const liff = useLiff();
 const eventId = route.params.id;
 
 const { error: eventError, pending } = await useFetch<{
@@ -118,7 +117,7 @@ const { error: eventError, pending } = await useFetch<{
   }[];
 }>(`/api/event/${eventId}`, {
   headers: {
-    authorization: `${liffStore.getIdToken()}`
+    authorization: `${liff.getIdToken()}`
   },
   lazy: true,
   onResponse: ({ response }) => {

@@ -6,7 +6,7 @@
       </div>
       <Button
         class="w-56"
-        @click="liffStore.login()"
+        @click="liff.login()"
       >
         Login with LINE
       </Button>
@@ -19,8 +19,7 @@
 </template>
 
 <script setup lang="ts">
-import { useLiffStore } from "~/stores/liff";
-const liffStore = useLiffStore();
+const liff = useLiff();
 
 definePageMeta({
   layout: "signin"
@@ -36,8 +35,8 @@ useSeoMeta({
   robots: "noindex nofollow"
 });
 
-watch(() => liffStore.isLoggedIn, () => {
-  if (liffStore.isLoggedIn) {
+watch(() => liff.isLoggedIn, () => {
+  if (liff.isLoggedIn) {
     navigateTo("/");
   }
 });

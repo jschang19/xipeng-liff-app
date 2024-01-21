@@ -1,5 +1,5 @@
 <template>
-  <div v-if="liffStore.user" class="h-full w-full flex flex-col px-6 justify-center items-center">
+  <div class="h-full w-full flex flex-col px-6 justify-center items-center">
     <div class="h-full max-w-md w-full py-8">
       <div class="text-2xl py-4 font-bold">
         今日議程
@@ -35,7 +35,6 @@
 <script setup lang="ts">
 import { useDayjs } from "#dayjs";
 import { Loader2 } from "lucide-vue-next";
-import { useLiffStore } from "~/stores/liff";
 
 useHead({
   title: "活動議程"
@@ -49,7 +48,7 @@ interface Event {
     endAt: number;
 };
 
-const liffStore = useLiffStore();
+const liff = useLiff();
 const dayjs = useDayjs();
 const events: Ref<Event[]> = ref([]);
 const eventPending = ref(false);
@@ -63,7 +62,7 @@ if (!cachedEvents.data.value) {
     method: "GET",
     key: "events",
     headers: {
-      authorization: `${liffStore.getIdToken()}`
+      authorization: `${liff.getIdToken()}`
     },
     lazy: true,
     pick: ["events"],

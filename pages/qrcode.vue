@@ -1,5 +1,5 @@
 <template>
-  <div v-if="liffStore.user" class="h-full w-full py-8 flex flex-col justify-center items-center px-6">
+  <div class="h-full w-full py-8 flex flex-col justify-center items-center px-6">
     <div class="h-full max-w-md w-full flex flex-col">
       <div class="flex-1 flex flex-col items-center justify-center w-full">
         <Tabs v-if="hasScanAccess" default-value="account" class="mx-auto">
@@ -50,23 +50,22 @@
 <script setup lang="ts">
 import { Camera } from "lucide-vue-next";
 import { useToast } from "~/components/ui/toast/use-toast";
-import { useLiffStore } from "~/stores/liff";
 const { toast } = useToast();
 
 useHead({
   title: "活動 QR Code"
 });
 
-const liffStore = useLiffStore();
-const hasScanAccess = ref(liffStore.user!.type.staff);
+const liff = useLiff();
+const hasScanAccess = ref(liff.user!.type.staff);
 const isLoading = ref(false);
 
 const qrCodeUrl = computed(() => {
-  return `https://chart.apis.google.com/chart?cht=qr&choe=UTF-8&chs=350x350&chl=${liffStore.user!.userId}`;
+  return `https://chart.apis.google.com/chart?cht=qr&choe=UTF-8&chs=350x350&chl=${liff.user!.userId}`;
 });
 
 async function handleScanCode () {
-  const result = await liffStore.scanCode();
+  const result = await liff.scanCode();
 
   if (!result) {
     toast({
@@ -80,7 +79,7 @@ async function handleScanCode () {
   const { error } = await useFetch("/api/booths/stamps", {
     method: "POST",
     headers: {
-      authorization: `${liffStore.getIdToken()}`
+      authorization: `${liff.getIdToken()}`
     },
     body: {
       participantId: result

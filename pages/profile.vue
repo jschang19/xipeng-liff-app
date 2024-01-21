@@ -1,5 +1,5 @@
 <template>
-  <div v-if="liffStore.user" class="h-full w-full py-8 flex flex-col justify-center items-center px-6">
+  <div class="h-full w-full py-8 flex flex-col justify-center items-center px-6">
     <div class="h-full max-w-md w-full space-y-3">
       <div class="py-4 text-2xl font-bold">
         個人資料
@@ -54,14 +54,13 @@ import { toTypedSchema } from "@vee-validate/zod";
 import * as z from "zod";
 import { useForm } from "vee-validate";
 import { useToast } from "~/components/ui/toast";
-import { useLiffStore } from "~/stores/liff";
 
 useHead({
   title: "個人資料"
 });
 
-const liffStore = useLiffStore();
-const isSpeaker = ref(liffStore.user?.type.speaker);
+const liff = useLiff();
+const isSpeaker = ref(liff.user?.type.speaker);
 const formSchema = toTypedSchema(z.object({
   university: z.string().min(1).max(25),
   major: z.string().min(1).max(25),
@@ -84,7 +83,7 @@ const { pending } = await useFetch(
   {
     method: "GET",
     headers: {
-      authorization: `${liffStore.getIdToken()}`
+      authorization: `${liff.getIdToken()}`
     },
     lazy: true,
     onResponse: ({ response }) => {
@@ -109,7 +108,7 @@ const onSubmit = form.handleSubmit(async (values) => {
     {
       method: "PUT",
       headers: {
-        authorization: `${liffStore.getIdToken()}`,
+        authorization: `${liff.getIdToken()}`,
         contentType: "application/json"
       },
       body: JSON.stringify(values),

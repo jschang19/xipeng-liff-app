@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import { Loader2 } from "lucide-vue-next";
-import { useLiffStore } from "~/stores/liff";
-const liffStore = useLiffStore();
+const liff = useLiff();
 
 watchEffect(() => {
-  if (liffStore.isLoggedIn) {
+  if (liff.isLoggedIn) {
     navigateTo("/");
   }
 });
