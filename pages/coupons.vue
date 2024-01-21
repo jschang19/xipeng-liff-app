@@ -105,6 +105,7 @@
 <script setup lang="ts">
 import { Loader2 } from "lucide-vue-next";
 import dayjs from "dayjs";
+import { useToast } from "~/components/ui/toast";
 interface Coupon {
   id: string;
   description: string;
@@ -116,8 +117,11 @@ interface Coupon {
   }
 }
 
-const userCoupons = ref<Coupon[]>([]);
 const liff = useLiff();
+const waitingSeconds = 120;
+
+const { toast } = useToast();
+const userCoupons = ref<Coupon[]>([]);
 const selectedCouponId = ref<string | null>(null);
 const confirmSheet = ref(false);
 const timerCount = ref(0);
@@ -139,18 +143,53 @@ const { pending } = useFetch<{
   }
 });
 
-function handleConfirm () {
+async function markCouponUsed () {
+  let success = false;
+  await useFetch(`/api/coupons/${selectedCouponId.value}`, {
+    method: "PATCH",
+    headers: {
+      authorization: `${liff.getIdToken()}`
+    },
+
+    onResponseError: ({ response }) => {
+      console.log(response.status);
+    },
+    onResponse: ({ response }) => {
+      if (response.status === 200) {
+        success = true;
+      }
+    }
+  });
+
+  return success;
+}
+
+async function handleConfirm () {
+  const marked = await markCouponUsed();
+
+  if (!marked) {
+    toast({
+      title: "兌換失敗",
+      description: "兌換失敗，請稍後再試",
+      variant: "destructive"
+    });
+    return;
+  }
+
+  await nextTick();
   confirmSheet.value = true;
-  timerCount.value = 5;
+  timerCount.value = waitingSeconds;
   usedAt.value = Date.now();
 
   const timer = setInterval(async () => {
     if (timerCount.value === 0) {
       removeUsedCoupon();
+
       await nextTick();
       confirmSheet.value = false;
       selectedCouponId.value = null;
       confirmSheet.value = false;
+
       clearInterval(timer);
       return;
     }

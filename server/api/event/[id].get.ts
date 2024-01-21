@@ -3,7 +3,7 @@ import { serverSupabaseServiceRole } from "#supabase/server";
 import type { Database } from "~/types/database";
 
 export default defineAuthEventHandler(async (event) => {
-  const { id: eventId } = event.context.params as { id: string | undefined };
+  const eventId = getRouterParam(event, "id");
 
   if (eventId === undefined) {
     setResponseStatus(event, 400);
