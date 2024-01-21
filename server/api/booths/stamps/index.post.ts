@@ -61,6 +61,51 @@ export default defineAuthEventHandler(async (event, user) => {
     onConflict: "user_id,booth_id"
   });
 
+  const [
+    { error: stampsError, count: stampCount },
+    { error: couponError, count: couponCount }
+  ] = await Promise.all([
+    supabaseService.from("stamp").select(`
+    *,
+    booth (
+      type
+    )
+  `, {
+      count: "exact"
+    }).eq("user_id", participantUUID.id),
+    supabaseService.from("user_coupon").select("*", { count: "exact", head: true }).eq("user_id", participantUUID.id)
+  ]);
+
+  if (stampsError || stampCount === null) {
+    setResponseStatus(event, 500);
+    return {
+      status: "error",
+      message: "Failed to get stamp data"
+    };
+  }
+
+  if (couponError || couponCount === null) {
+    setResponseStatus(event, 500);
+    return {
+      status: "error",
+      message: "Failed to get coupon data"
+    };
+  }
+
+  if (stampCount === 3 && couponCount === 0) {
+    await $fetch("/api/coupons/reward", {
+      method: "POST",
+      headers: {
+        content_type: "application/json",
+        authorization: getRequestHeaders(event).authorization!
+      },
+      body: {
+        participantId: participantUUID.id
+      }
+    });
+  }
+  // if stamps is more then 4, check if there's 3 internal stamps and 1 external stamp by checking the booth type
+
   if (stampError) {
     setResponseStatus(event, 500);
     return {
