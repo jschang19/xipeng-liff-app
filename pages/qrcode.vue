@@ -61,8 +61,39 @@ const hasScanAccess = ref(liff.user!.type.staff);
 const isLoading = ref(false);
 
 const qrCodeUrl = computed(() => {
-  return `https://chart.apis.google.com/chart?cht=qr&choe=UTF-8&chs=350x350&chl=${liff.user!.userId}`;
+  return `https://chart.apis.google.com/chart?cht=qr&choe=UTF-8&chs=350x350&chl=${
+    encodeURIComponent(`
+      type=stamp&data=${liff.user!.userId}
+    `)
+  }`;
 });
+
+async function handleStamp (participantId: string) {
+  const { error } = await useFetch("/api/booths/stamps", {
+    method: "POST",
+    headers: {
+      authorization: `${liff.getIdToken()}`
+    },
+    body: {
+      participantId
+    }
+  });
+
+  if (error.value) {
+    isLoading.value = false;
+    toast({
+      title: "掃描失敗",
+      description: "請查看 console 錯誤訊息"
+    });
+
+    return;
+  }
+
+  toast({
+    title: "掃描成功",
+    description: "請參與者到集章冊頁面確認"
+  });
+}
 
 async function handleScanCode () {
   const result = await liff.scanCode();
@@ -76,31 +107,40 @@ async function handleScanCode () {
     return;
   }
 
-  const { error } = await useFetch("/api/booths/stamps", {
-    method: "POST",
-    headers: {
-      authorization: `${liff.getIdToken()}`
-    },
-    body: {
-      participantId: result
-    }
-  });
+  const parsed = computed(
+    () => {
+      const params = new URLSearchParams(result);
 
-  if (error.value) {
-    isLoading.value = false;
+      return {
+        type: params.get("type"),
+        data: params.get("data")
+      };
+    }
+  );
+
+  if (!parsed.value.type || !parsed.value.data) {
+    console.error("Invalid QR Code", parsed.value);
     toast({
       title: "掃描失敗",
-      description: "請查看 console 錯誤訊息"
+      description: "請檢查 QR Code 是否正確"
     });
+
     return;
   }
 
-  isLoading.value = false;
+  switch (parsed.value.type) {
+    case "stamp":
+      await handleStamp(parsed.value.data);
+      break;
+    default:
+      toast({
+        title: "掃描失敗",
+        description: "請重新掃描"
+      });
+      break;
+  }
 
-  toast({
-    title: "掃描成功",
-    description: `已成功掃描 QR Code ${result}`
-  });
+  isLoading.value = false;
 }
 
 </script>
