@@ -1,5 +1,4 @@
 export default defineNuxtConfig({
-  ssr: false,
   app: {
     head: {
       title: "攜澎引盼 2024 活動網站",
@@ -26,7 +25,9 @@ export default defineNuxtConfig({
     "@nuxt/image",
     "dayjs-nuxt"
   ],
-  plugins: [],
+  plugins: [
+    { src: "~/plugins/liff.ts", mode="client"}
+  ],
   runtimeConfig: {
     public: {
       LIFF_ID: process.env.LIFF_ID
