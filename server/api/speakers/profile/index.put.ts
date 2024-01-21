@@ -3,9 +3,9 @@ import type { Database } from "~/types/database";
 
 export default defineAuthEventHandler(async (event, user) => {
   const supabaseService = serverSupabaseServiceRole<Database>(event);
-  const { university: universityName, major: majorName, bio } = await readBody(event);
+  const { name: displayName, university: universityName, major: majorName, bio } = await readBody(event);
 
-  if (!universityName || !majorName) {
+  if (!universityName || !majorName || !displayName) {
     setResponseStatus(event, 400);
     return {
       status: "error",
@@ -42,11 +42,10 @@ export default defineAuthEventHandler(async (event, user) => {
     };
   }
 
-  console.log(speakerUUID[0].user.id);
-
   const { error } = await supabaseService.from("speaker_profile").upsert({
     user_id: speakerUUID[0].user.id,
     university_name: universityName,
+    display_name: displayName,
     major_name: majorName,
     bio
   }, {

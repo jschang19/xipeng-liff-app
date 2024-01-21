@@ -10,6 +10,7 @@ export default defineAuthEventHandler(async (event, user) => {
       user(
         line_id,
         speaker_profile(
+          display_name,
           university_name,
           major_name,
           bio
@@ -36,6 +37,7 @@ export default defineAuthEventHandler(async (event, user) => {
 
   return {
     status: "ok",
+    name: speakerResult[0].user.speaker_profile.display_name,
     university: speakerResult[0].user.speaker_profile.university_name,
     major: speakerResult[0].user.speaker_profile.major_name,
     bio: speakerResult[0].user.speaker_profile.bio

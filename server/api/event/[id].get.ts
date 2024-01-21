@@ -34,6 +34,7 @@ export default defineAuthEventHandler(async (event) => {
             display_name,
             picture_url,
             speaker_profile (
+              display_name,
               bio,
               university_name,
               major_name
@@ -69,7 +70,7 @@ export default defineAuthEventHandler(async (event) => {
       endAt: eventResult.end_at
     },
     speakers: speakersResult.map(speaker => ({
-      name: speaker.user.display_name,
+      name: speaker.user.speaker_profile?.display_name || speaker.user.display_name,
       pictureUrl: speaker.user.picture_url,
       bio: speaker.user.speaker_profile?.bio,
       universityName: speaker.user.speaker_profile?.university_name,

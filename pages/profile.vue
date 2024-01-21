@@ -8,6 +8,18 @@
         <Loader2 class="w-8 h-8 animate-spin" />
       </div>
       <form v-else-if="!pending && isSpeaker" class="space-y-4" @submit="onSubmit">
+        <FormField v-slot="{ componentField }" name="name" :model-value="prefillData.name">
+          <FormItem>
+            <FormLabel>全名</FormLabel>
+            <FormControl>
+              <Input type="text" v-bind="componentField" />
+            </FormControl>
+            <FormDescription>
+              這會顯示在講者介紹上
+            </FormDescription>
+            <FormMessage />
+          </FormItem>
+        </FormField>
         <FormField v-slot="{ componentField }" name="university" :model-value="prefillData.university">
           <FormItem>
             <FormLabel>大學名稱</FormLabel>
@@ -42,7 +54,7 @@
           </FormItem>
         </FormField>
         <Button type="submit" class="mt-4">
-          Submit
+          儲存變更
         </Button>
       </form>
     </div>
@@ -62,11 +74,13 @@ useHead({
 const liff = useLiff();
 const isSpeaker = ref(liff.user?.type.speaker);
 const formSchema = toTypedSchema(z.object({
+  name: z.string().min(1).max(10),
   university: z.string().min(1).max(25),
   major: z.string().min(1).max(25),
   bio: z.string().min(2).max(150).optional()
 }));
 const prefillData = ref({
+  name: "",
   university: "",
   major: "",
   bio: ""
@@ -86,8 +100,15 @@ const { pending } = await useFetch(
       authorization: `${liff.getIdToken()}`
     },
     lazy: true,
+    onResponseError: () => {
+      toast({
+        title: "取得資料失敗",
+        description: "請稍後再試"
+      });
+    },
     onResponse: ({ response }) => {
       prefillData.value = {
+        name: response._data.name,
         university: response._data.university,
         major: response._data.major,
         bio: response._data.bio
@@ -112,10 +133,10 @@ const onSubmit = form.handleSubmit(async (values) => {
         contentType: "application/json"
       },
       body: JSON.stringify(values),
-      onRequestError: ({ error }) => {
+      onResponseError: () => {
         toast({
           title: "更新失敗",
-          description: error.message
+          description: "請稍後再試"
         });
       },
       onResponse: ({ response }) => {
