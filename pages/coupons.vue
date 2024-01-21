@@ -46,7 +46,7 @@
                 確定要兌換了嗎？
               </AlertDialogTitle>
               <AlertDialogDescription>
-                一旦兌換後將無法再開啟，並在 3 分鐘後過期。請在要結帳時再開啟兌換畫面！
+                一旦兌換後將無法再開啟，並在 {{ WAITING_SECONDS / 60 }} 分鐘後過期。請在要結帳時再開啟兌換畫面！
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
@@ -117,8 +117,8 @@ interface Coupon {
   }
 }
 
+const WAITING_SECONDS = 120;
 const liff = useLiff();
-const waitingSeconds = 120;
 
 const { toast } = useToast();
 const userCoupons = ref<Coupon[]>([]);
@@ -178,7 +178,7 @@ async function handleConfirm () {
 
   await nextTick();
   confirmSheet.value = true;
-  timerCount.value = waitingSeconds;
+  timerCount.value = WAITING_SECONDS;
   usedAt.value = Date.now();
 
   const timer = setInterval(async () => {
