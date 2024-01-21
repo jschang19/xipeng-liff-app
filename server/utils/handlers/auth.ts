@@ -47,7 +47,11 @@ export const defineAuthEventHandler = <T extends EventHandlerRequest, D> (
           displayName: data.name,
           pictureUrl: data.picture,
           email: data.email,
-          access: "user"
+          access: "user",
+          type: {
+            speaker: false,
+            staff: false
+          }
         };
         return handler(event, user);
       } catch (err) {
