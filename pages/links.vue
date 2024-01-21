@@ -7,20 +7,22 @@
         </div>
       </div>
 
-      <div class="grid grid-cols-4 gap-5">
-        <Card v-for="link in navLinks" :key="link.title" class="flex aspect-square h-[4.5rem] shadow-none">
-          <NuxtLink :to="link.href">
-            <div class="text-sm">
+      <div class="grid grid-cols-4 gap-8">
+        <div v-for="link in navLinks" :key="link.title">
+          <NuxtLink :to="link.href" class="flex flex-col gap-3 aspect-square h-[4.5rem] shadow-none text-slate-600" :target="link.openNewTab ? '_blank' : null">
+            <Component :is="link.icon" class="w-6 h-6 mx-auto" />
+            <div class="text-xs text-center font-medium">
               {{ link.title }}
             </div>
           </NuxtLink>
-        </Card>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { ArrowTopRightIcon, ReaderIcon, PersonIcon, CornersIcon } from "@radix-icons/vue";
 const liff = useLiff();
 const isSpeaker = ref(liff.user!.type.speaker);
 
@@ -30,16 +32,31 @@ useHead({
 
 const navLinks = ref([{
   title: "活動議程",
-  href: "/agenda"
+  href: "/agenda",
+  icon: ReaderIcon
+
 }, {
-  title: "活動 QR Code",
-  href: "/qrcode"
-}]);
+  title: "QR Code",
+  href: "/qrcode",
+  icon: CornersIcon
+}, {
+  title: "活動官網",
+  href: "https://google.com",
+  icon: ArrowTopRightIcon,
+  openNewTab: true
+}, {
+  title: "折價券",
+  href: "/coupons",
+  icon: ArrowTopRightIcon
+}
+]
+);
 
 if (isSpeaker.value) {
   navLinks.value.push({
     title: "個人資料",
-    href: "/profile"
+    href: "/profile",
+    icon: PersonIcon
   });
 }
 </script>
