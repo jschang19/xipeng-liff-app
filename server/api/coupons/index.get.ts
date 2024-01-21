@@ -27,14 +27,10 @@ export default defineAuthEventHandler(async (event, user) => {
     return { message: error };
   }
 
-  console.log(userCoupons);
-
   const validCoupons = userCoupons.filter((coupon) => {
     // check if is_used and expire_at
     return !coupon.used_at && coupon.coupon && dayjs(coupon.coupon.expire_at).isAfter(dayjs());
   });
-
-  console.log(validCoupons);
 
   return {
     coupons: validCoupons.map((coupon) => {
