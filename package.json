@@ -35,6 +35,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
     "lucide-vue-next": "^0.303.0",
+    "nanoid": "^5.0.4",
     "ntu-studentid-lookup": "^2.0.1",
     "pinia": "^2.1.7",
     "radix-vue": "^1.2.5",
