@@ -4,6 +4,7 @@ import type { Profile } from "~/types";
 
 export const useLiff = defineStore("liff", () => {
   const isLoggedIn = ref<boolean>(false);
+  const isInited = ref<boolean>(false);
   const user = ref<Profile | null>(null);
   const runtimeConfig = useRuntimeConfig();
   const liffId = runtimeConfig.public.LIFF_ID;
@@ -15,11 +16,16 @@ export const useLiff = defineStore("liff", () => {
     }
 
     try {
-      await liff.init({ liffId });
+      if (!isInited.value) {
+        await liff.init({ liffId });
+        isInited.value = true;
+      }
+
       isLoggedIn.value = liff.isLoggedIn();
       // console.log("LIFF init success", "SDK version:", liff.getVersion());
     } catch (error) {
       console.error("LIFF initialization failed:", error);
+      throw error;
     }
   }
 
@@ -78,8 +84,6 @@ export const useLiff = defineStore("liff", () => {
 
   function checkTokenValidity () {
     const payload = liff.getDecodedIDToken();
-    // check exp in payload and determine if token is expired
-    // return true if token is valid
 
     if (!payload) {
       return false;

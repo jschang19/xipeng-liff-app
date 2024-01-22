@@ -1,11 +1,10 @@
 // middleware/auth.ts
 import { useLiff } from "~/stores/liff";
 
-export default defineNuxtRouteMiddleware(async (to, _) => {
+export default defineNuxtRouteMiddleware((to, _) => {
   const SIGN_IN_PATH = "/sign-in";
 
   const liff = useLiff();
-  await liff.init();
   const tokenValid = liff.checkTokenValidity();
 
   if (to.path === SIGN_IN_PATH) {
