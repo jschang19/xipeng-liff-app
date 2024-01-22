@@ -11,6 +11,7 @@
         回議程表
       </Button>
     </div>
+    <FetchError v-else-if="eventError" />
     <div v-else-if="event && event.info" class="h-full max-w-md w-full space-y-3">
       <div class="pt-4">
         <div class="text-2xl font-bold">

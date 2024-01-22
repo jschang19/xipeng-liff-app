@@ -7,6 +7,7 @@
       <div v-if="pending" class="flex flex-col items-center justify-center h-full">
         <Loader2 class="w-8 h-8 animate-spin" />
       </div>
+      <FetchError v-else-if="ProfileError" />
       <form v-else-if="!pending && isSpeaker" class="space-y-4" @submit="onSubmit">
         <FormField v-slot="{ componentField }" name="name" :model-value="prefillData.name">
           <FormItem>
@@ -92,7 +93,7 @@ if (!isSpeaker.value) {
   await navigateTo("/", { replace: true });
 }
 
-const { pending } = await useFetch(
+const { error: ProfileError, pending } = await useFetch(
   "/api/speakers/profile",
   {
     method: "GET",

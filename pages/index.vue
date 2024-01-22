@@ -16,6 +16,7 @@
           <Loader2 class="w-8 h-8 text-black animate-spin" />
         </div>
       </div>
+      <FetchError v-else-if="boothError" />
       <div v-else class="grid grid-cols-4 place-items-center rounded-lg border-2">
         <Dialog>
           <div v-for="booth in booths" :key="booth.id" class="flex items-center justify-center relative">
@@ -73,7 +74,7 @@ interface Booth {
 const liff = useLiff();
 const booths = ref<Booth[]>();
 
-const { pending: boothPending } = await useFetch<{
+const { error: boothError, pending: boothPending } = await useFetch<{
   booths: Booth[];
 }>("/api/booths", {
   headers: {

@@ -9,6 +9,7 @@
       <div v-if="pending" class="h-full w-full flex flex-col justify-center items-center">
         <Loader2 class="w-8 h-8 animate-spin" />
       </div>
+      <FetchError v-else-if="couponError" />
       <div v-else class="h-full w-full">
         <div v-if="userCoupons.length === 0" class="flex flex-col items-center justify-center h-full gap-3">
           <div>
@@ -130,7 +131,7 @@ const selectedCoupon = computed(() => {
   return userCoupons.value.find(coupon => coupon.id === selectedCouponId.value);
 });
 
-const { pending } = useFetch<{
+const { error: couponError, pending } = useFetch<{
   coupons: Coupon[];
 }>("/api/coupons", {
   method: "GET",
