@@ -75,7 +75,7 @@
           <div class="grid gap-4 py-4">
             <div class="flex flex-col gap-2 text-sm text-center">
               <div class="text-lg font-bold">
-                兌換時間：{{ formatTime(usedAt) }}
+                到期時間：{{ formatTime(exprieAt) }}
               </div>
               <div class="text-md font-bold text-red-600">
                 剩下 {{ timerCount }} 秒
@@ -125,8 +125,10 @@ const { toast } = useToast();
 const userCoupons = ref<Coupon[]>([]);
 const selectedCouponId = ref<string | null>(null);
 const confirmSheet = ref(false);
+
 const timerCount = ref(0);
-const usedAt = ref<number|null>(null);
+const exprieAt = ref<number|null>(null);
+
 const selectedCoupon = computed(() => {
   return userCoupons.value.find(coupon => coupon.id === selectedCouponId.value);
 });
@@ -171,16 +173,17 @@ async function handleConfirm () {
   if (!marked) {
     toast({
       title: "兌換失敗",
-      description: "兌換失敗，請稍後再試",
+      description: "兌換失敗，但你的優惠券還在，請稍後再試",
       variant: "destructive"
     });
     return;
   }
 
   await nextTick(); // wait for the coupon to be removed from the list
+
   confirmSheet.value = true;
   timerCount.value = WAITING_SECONDS;
-  usedAt.value = Date.now();
+  exprieAt.value = Date.now() + WAITING_SECONDS * 1000;
 
   const timer = setInterval(async () => {
     if (timerCount.value === 0) {
@@ -202,7 +205,7 @@ async function handleConfirm () {
 function formatTime (unix: number | null) {
   if (!unix) { return ""; }
 
-  return dayjs(unix).utc().local().format("YYYY/MM/DD HH:mm");
+  return dayjs(unix).utc().local().format("YYYY 年 M 月 D 號 H:m");
 }
 
 function removeUsedCoupon () {
