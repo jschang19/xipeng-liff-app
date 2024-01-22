@@ -3,18 +3,48 @@ import { serverSupabaseServiceRole } from "#supabase/server";
 import type { Profile } from "~/types";
 import type { Database } from "~/types/database";
 
-export const defineAuthEventHandler = <T extends EventHandlerRequest, D> (
-  handler: (event: H3Event, user: Profile) => Promise<D>
-): EventHandler<T, D> =>
-    defineEventHandler<T>(async (event) => {
-      interface FullProfile extends Profile {
+interface FullProfile extends Profile {
         uuid: string;
       }
 
+  interface LineVerifyResponse {
+        sub: string;
+        name: string;
+        picture: string;
+        email: string;
+        error?: string;
+      };
+
+export const defineAuthEventHandler = <T extends EventHandlerRequest, D> (
+  handler: (event: H3Event, user: FullProfile) => Promise<D>
+): EventHandler<T, D> =>
+    defineEventHandler<T>(async (event) => {
       try {
         // get header  authorization
         const idToken = getRequestHeaders(event).authorization;
         const config = useRuntimeConfig();
+        const cachedResponse = await useStorage<LineVerifyResponse>("redis").getItem(`auth:${idToken}`);
+
+        if (cachedResponse) {
+          const userData = await getProfileData(event, cachedResponse.sub);
+
+          const user: FullProfile = {
+            userId: cachedResponse.sub,
+            uuid: userData.id,
+            displayName: userData?.display_name ?? cachedResponse.name,
+            pictureUrl: userData?.picture_url ?? cachedResponse.picture,
+            email: userData?.email ?? cachedResponse.email,
+            access: userData?.access ?? "user",
+            type: {
+              staff: userData?.booth_staff.length > 0,
+              speaker: userData?.event_speaker.length > 0
+            }
+          };
+
+          return handler(event, user);
+        }
+
+        // If not cached, verify token
 
         const response = await fetch("https://api.line.me/oauth2/v2.1/verify", {
           method: "POST",
@@ -27,12 +57,12 @@ export const defineAuthEventHandler = <T extends EventHandlerRequest, D> (
           }),
           cache: "no-cache"
         });
-
         const data = await response.json();
+        await useStorage<LineVerifyResponse>("redis").setItem(`auth:${idToken}`, data, { ttl: 60 * 10 });
 
         // check if error is in the response
         if (data.error) {
-          console.error("error", data.error);
+          // console.error("error", data.error);
 
           if (data.error === "invalid_request") {
             setResponseStatus(event, 401);
@@ -49,29 +79,11 @@ export const defineAuthEventHandler = <T extends EventHandlerRequest, D> (
           }
         }
 
-        const { data: userData, error: userError } = await serverSupabaseServiceRole<Database>(event).from("user")
-          .select(`
-            *,
-            event_speaker(
-              event_id
-            ),
-            booth_staff(
-              booth_id
-            )
-            `)
-          .eq("line_id", data.sub).maybeSingle();
-
-        if (userError) {
-          setResponseStatus(event, 500);
-          console.error("error", userError);
-          return {
-            status: "error"
-          };
-        }
+        const userData = await getProfileData(event, data.sub);
 
         const user: FullProfile = {
           userId: data.sub,
-          uuid: userData.uuid,
+          uuid: userData.id,
           displayName: userData?.display_name ?? data.name,
           pictureUrl: userData?.picture_url ?? data.picture,
           email: userData?.email ?? data.email,
@@ -89,3 +101,36 @@ export const defineAuthEventHandler = <T extends EventHandlerRequest, D> (
         throw err;
       }
     });
+
+async function getProfileData (event: H3Event, userId: string): Promise<{
+  id: string;
+  line_id: string;
+  display_name: string;
+  picture_url: string;
+  email: string;
+  access: "user" | "admin";
+  event_speaker: {
+    event_id: number;
+  }[];
+  booth_staff: {
+    booth_id: number;
+  }[];
+}> {
+  const { data: userData, error: userError } = await serverSupabaseServiceRole<Database>(event).from("user")
+    .select(`
+            *,
+            event_speaker(
+              event_id
+            ),
+            booth_staff(
+              booth_id
+            )
+            `)
+    .eq("line_id", userId).maybeSingle();
+
+  if (userError) {
+    throw userError;
+  }
+
+  return userData;
+}
