@@ -8,7 +8,9 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix .",
+    "supabase": "npx supabase gen types typescript --project-id wvoiniabqxecfykhypvm --schema public > types/database.d.ts"
   },
   "devDependencies": {
     "@line/liff": "^2.23.0",
@@ -21,6 +23,7 @@
     "eslint": "^8.56.0",
     "nuxt": "^3.8.2",
     "shadcn-nuxt": "^0.1.0",
+    "supabase": ">=1.8.1",
     "typescript": "^5.3.3"
   },
   "dependencies": {

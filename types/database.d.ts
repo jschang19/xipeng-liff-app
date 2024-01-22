@@ -9,157 +9,336 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
-      events: {
+      booth: {
         Row: {
-          created_at: string
-          created_by: string | null
-          end_at: string
-          id: number
-          is_open: boolean
-          limit: number | null
-          place: string | null
-          repeat: boolean
-          repeat_day: Database["public"]["Enums"]["event_repeat_day"] | null
-          scope: number
-          start_at: string
-          title: string
-          type: Database["public"]["Enums"]["event_type"]
-        }
-        Insert: {
-          created_at?: string
-          created_by?: string | null
-          end_at: string
-          id?: number
-          is_open?: boolean
-          limit?: number | null
-          place?: string | null
-          repeat?: boolean
-          repeat_day?: Database["public"]["Enums"]["event_repeat_day"] | null
-          scope: number
-          start_at: string
-          title: string
-          type?: Database["public"]["Enums"]["event_type"]
-        }
-        Update: {
-          created_at?: string
-          created_by?: string | null
-          end_at?: string
-          id?: number
-          is_open?: boolean
-          limit?: number | null
-          place?: string | null
-          repeat?: boolean
-          repeat_day?: Database["public"]["Enums"]["event_repeat_day"] | null
-          scope?: number
-          start_at?: string
-          title?: string
-          type?: Database["public"]["Enums"]["event_type"]
-        }
-        Relationships: [
-          {
-            foreignKeyName: "events_created_by_fkey"
-            columns: ["created_by"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          }
-        ]
-      }
-      game_participations: {
-        Row: {
-          created_at: string
-          event_id: number
-          user_id: string
-        }
-        Insert: {
-          created_at?: string
-          event_id: number
-          user_id: string
-        }
-        Update: {
-          created_at?: string
-          event_id?: number
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "game_participations_event_id_fkey"
-            columns: ["event_id"]
-            isOneToOne: false
-            referencedRelation: "events"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "game_participations_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          }
-        ]
-      }
-      profiles: {
-        Row: {
-          access: number
-          created_at: string
-          department: string | null
+          description: string | null
           id: string
-          phone: string | null
-          real_name: string | null
-          student_id: string | null
+          image_url: string | null
+          is_for_speaker: boolean
+          is_prefilled: boolean
+          link: string | null
+          name: string
+          particapant_num: number
+          points: number
+          type: Database["public"]["Enums"]["booth_type"] | null
         }
         Insert: {
-          access?: number
-          created_at?: string
-          department?: string | null
-          id: string
-          phone?: string | null
-          real_name?: string | null
-          student_id?: string | null
-        }
-        Update: {
-          access?: number
-          created_at?: string
-          department?: string | null
+          description?: string | null
           id?: string
-          phone?: string | null
-          real_name?: string | null
-          student_id?: string | null
+          image_url?: string | null
+          is_for_speaker?: boolean
+          is_prefilled?: boolean
+          link?: string | null
+          name: string
+          particapant_num?: number
+          points?: number
+          type?: Database["public"]["Enums"]["booth_type"] | null
+        }
+        Update: {
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          is_for_speaker?: boolean
+          is_prefilled?: boolean
+          link?: string | null
+          name?: string
+          particapant_num?: number
+          points?: number
+          type?: Database["public"]["Enums"]["booth_type"] | null
         }
         Relationships: []
       }
-      training_attendances: {
+      booth_staff: {
         Row: {
-          created_at: string
-          event_id: number
-          id: number
+          booth_id: string
           user_id: string
         }
         Insert: {
-          created_at?: string
-          event_id: number
-          id?: number
+          booth_id: string
           user_id: string
         }
         Update: {
-          created_at?: string
-          event_id?: number
-          id?: number
+          booth_id?: string
           user_id?: string
         }
         Relationships: [
           {
-            foreignKeyName: "training_attendances_event_id_fkey"
-            columns: ["event_id"]
+            foreignKeyName: "booth_staff_booth_id_fkey"
+            columns: ["booth_id"]
             isOneToOne: false
-            referencedRelation: "events"
+            referencedRelation: "booth"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "training_attendances_user_id_fkey"
+            foreignKeyName: "booth_staff_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
-            referencedRelation: "profiles"
+            referencedRelation: "user"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      coupon: {
+        Row: {
+          created_at: string
+          default_num: number
+          description: string
+          expire_at: string
+          id: string
+          issued_num: number
+          quantity: number
+          store_id: string
+        }
+        Insert: {
+          created_at?: string
+          default_num?: number
+          description: string
+          expire_at: string
+          id?: string
+          issued_num?: number
+          quantity?: number
+          store_id: string
+        }
+        Update: {
+          created_at?: string
+          default_num?: number
+          description?: string
+          expire_at?: string
+          id?: string
+          issued_num?: number
+          quantity?: number
+          store_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coupon_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "store"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      event: {
+        Row: {
+          created_at: string
+          description: string
+          end_at: string
+          id: string
+          place: string
+          start_at: string
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          end_at: string
+          id?: string
+          place: string
+          start_at: string
+          title: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          end_at?: string
+          id?: string
+          place?: string
+          start_at?: string
+          title?: string
+        }
+        Relationships: []
+      }
+      event_speaker: {
+        Row: {
+          created_at: string
+          event_id: string
+          speaker_id: string
+        }
+        Insert: {
+          created_at?: string
+          event_id: string
+          speaker_id: string
+        }
+        Update: {
+          created_at?: string
+          event_id?: string
+          speaker_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_speaker_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "event"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "event_speaker_speaker_id_fkey"
+            columns: ["speaker_id"]
+            isOneToOne: false
+            referencedRelation: "user"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      speaker_profile: {
+        Row: {
+          bio: string | null
+          display_name: string | null
+          grade: string | null
+          major_name: string | null
+          university_name: string | null
+          user_id: string
+        }
+        Insert: {
+          bio?: string | null
+          display_name?: string | null
+          grade?: string | null
+          major_name?: string | null
+          university_name?: string | null
+          user_id: string
+        }
+        Update: {
+          bio?: string | null
+          display_name?: string | null
+          grade?: string | null
+          major_name?: string | null
+          university_name?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "speaker_profile_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "user"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      stamp: {
+        Row: {
+          booth_id: string
+          created_at: string
+          scanned_by: string | null
+          user_id: string
+        }
+        Insert: {
+          booth_id: string
+          created_at?: string
+          scanned_by?: string | null
+          user_id: string
+        }
+        Update: {
+          booth_id?: string
+          created_at?: string
+          scanned_by?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stamp_booth_id_fkey"
+            columns: ["booth_id"]
+            isOneToOne: false
+            referencedRelation: "booth"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "stamp_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "user"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      store: {
+        Row: {
+          address: string | null
+          created_at: string
+          id: string
+          image_url: string | null
+          name: string
+        }
+        Insert: {
+          address?: string | null
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          name: string
+        }
+        Update: {
+          address?: string | null
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          name?: string
+        }
+        Relationships: []
+      }
+      user: {
+        Row: {
+          created_at: string
+          display_name: string
+          email: string | null
+          id: string
+          line_id: string
+          picture_url: string | null
+        }
+        Insert: {
+          created_at?: string
+          display_name: string
+          email?: string | null
+          id?: string
+          line_id: string
+          picture_url?: string | null
+        }
+        Update: {
+          created_at?: string
+          display_name?: string
+          email?: string | null
+          id?: string
+          line_id?: string
+          picture_url?: string | null
+        }
+        Relationships: []
+      }
+      user_coupon: {
+        Row: {
+          coupon_id: string
+          created_at: string
+          id: string
+          used_at: string | null
+          user_id: string
+        }
+        Insert: {
+          coupon_id: string
+          created_at?: string
+          id?: string
+          used_at?: string | null
+          user_id: string
+        }
+        Update: {
+          coupon_id?: string
+          created_at?: string
+          id?: string
+          used_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_coupon_coupon_id_fkey"
+            columns: ["coupon_id"]
+            isOneToOne: false
+            referencedRelation: "coupon"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_coupon_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "user"
             referencedColumns: ["id"]
           }
         ]
@@ -172,8 +351,8 @@ export interface Database {
       [_ in never]: never
     }
     Enums: {
-      event_repeat_day: "0" | "1" | "2" | "3" | "4" | "5" | "6"
-      event_type: "game" | "training"
+      booth_type: "internal" | "external"
+      user_access: "1" | "49" | "99"
     }
     CompositeTypes: {
       [_ in never]: never
