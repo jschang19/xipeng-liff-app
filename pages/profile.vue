@@ -122,8 +122,6 @@ const form = useForm({
 });
 
 const onSubmit = form.handleSubmit(async (values) => {
-  console.log(values);
-
   await useFetch(
     "/api/speakers/profile",
     {

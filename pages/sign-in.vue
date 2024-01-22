@@ -35,8 +35,12 @@ useSeoMeta({
   robots: "noindex nofollow"
 });
 
-watch(() => liff.isLoggedIn, () => {
-  if (liff.isLoggedIn) {
+if (liff.isInClient()) {
+  liff.login();
+}
+
+watch(() => liff.user, () => {
+  if (liff.user) {
     navigateTo("/");
   }
 });

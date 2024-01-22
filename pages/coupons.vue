@@ -152,7 +152,7 @@ async function markCouponUsed () {
     },
 
     onResponseError: ({ response }) => {
-      console.log(response.status);
+      console.error(response);
     },
     onResponse: ({ response }) => {
       if (response.status === 200) {
@@ -176,7 +176,7 @@ async function handleConfirm () {
     return;
   }
 
-  await nextTick();
+  await nextTick(); // wait for the coupon to be removed from the list
   confirmSheet.value = true;
   timerCount.value = WAITING_SECONDS;
   usedAt.value = Date.now();
