@@ -25,10 +25,7 @@ export default defineAuthEventHandler(async (event, user) => {
     // get participant uuid
     supabaseService.from("user").select("id").eq("line_id", participantId).maybeSingle(),
     // get staff uuid
-    supabaseService.from("booth_staff").select(`
-      *,
-      user!inner(line_id)
-    `).eq("user.line_id", user.userId).maybeSingle()
+    supabaseService.from("booth_staff").select("*").eq("user_id", user.uuid).maybeSingle()
   ]);
 
   if (participantError || staffRecordError) {
