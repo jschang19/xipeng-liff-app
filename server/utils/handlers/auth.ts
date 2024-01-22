@@ -1,9 +1,16 @@
 import { type EventHandler, type EventHandlerRequest, H3Event } from "h3";
+import { serverSupabaseServiceRole } from "#supabase/server";
 import type { Profile } from "~/types";
+import type { Database } from "~/types/database";
+
 export const defineAuthEventHandler = <T extends EventHandlerRequest, D> (
   handler: (event: H3Event, user: Profile) => Promise<D>
 ): EventHandler<T, D> =>
     defineEventHandler<T>(async (event) => {
+      interface FullProfile extends Profile {
+        uuid: string;
+      }
+
       try {
         // get header  authorization
         const idToken = getRequestHeaders(event).authorization;
@@ -42,17 +49,39 @@ export const defineAuthEventHandler = <T extends EventHandlerRequest, D> (
           }
         }
 
-        const user: Profile = {
+        const { data: userData, error: userError } = await serverSupabaseServiceRole<Database>(event).from("user")
+          .select(`
+            *,
+            event_speaker(
+              event_id
+            ),
+            booth_staff(
+              booth_id
+            )
+            `)
+          .eq("line_id", data.sub).maybeSingle();
+
+        if (userError) {
+          setResponseStatus(event, 500);
+          console.error("error", userError);
+          return {
+            status: "error"
+          };
+        }
+
+        const user: FullProfile = {
           userId: data.sub,
-          displayName: data.name,
-          pictureUrl: data.picture,
-          email: data.email,
-          access: "user",
+          uuid: userData.uuid,
+          displayName: userData?.display_name ?? data.name,
+          pictureUrl: userData?.picture_url ?? data.picture,
+          email: userData?.email ?? data.email,
+          access: userData?.access ?? "user",
           type: {
-            speaker: false,
-            staff: false
+            staff: userData?.booth_staff.length > 0,
+            speaker: userData?.event_speaker.length > 0
           }
         };
+
         return handler(event, user);
       } catch (err) {
         setResponseStatus(event, 500);
