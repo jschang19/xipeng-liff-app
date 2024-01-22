@@ -2,8 +2,8 @@
   <div class="h-full w-full py-8 flex flex-col justify-center items-center px-6">
     <div class="h-full max-w-md w-full flex flex-col">
       <div class="flex-1 flex flex-col items-center justify-center w-full">
-        <Tabs v-if="hasScanAccess" default-value="account" class="mx-auto">
-          <TabsContent value="account">
+        <Tabs v-if="hasScanAccess" default-value="qrcode" class="mx-auto">
+          <TabsContent value="qrcode">
             <div class="flex-1 flex flex-col gap-1 items-center justify-center">
               <div class="text-2xl font-bold">
                 你的 QR Code
@@ -14,7 +14,7 @@
               </div>
             </div>
           </TabsContent>
-          <TabsContent value="password">
+          <TabsContent value="scanner">
             <div class="h-60 w-60 flex flex-col items-center justify-center">
               <Button size="lg" :disabled="isLoading" @click="handleScanCode">
                 <Camera class="w-5 h-5 mr-2" />
@@ -24,10 +24,10 @@
           </TabsContent>
           <div class="w-full justify-center items-center flex pt-4">
             <TabsList>
-              <TabsTrigger value="account">
+              <TabsTrigger value="qrcode">
                 顯示條碼
               </TabsTrigger>
-              <TabsTrigger value="password">
+              <TabsTrigger value="scanner">
                 掃描條碼
               </TabsTrigger>
             </TabsList>
