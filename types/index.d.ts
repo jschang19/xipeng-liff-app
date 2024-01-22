@@ -4,7 +4,6 @@ interface Profile {
     pictureUrl: string;
     statusMessage?: string;
     email: string | null;
-    access: "admin" | "booth" | "user";
     type:{
         staff: boolean;
         speaker: boolean;
