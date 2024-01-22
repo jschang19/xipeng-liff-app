@@ -17,7 +17,7 @@ export const useLiff = defineStore("liff", () => {
     try {
       await liff.init({ liffId });
       isLoggedIn.value = liff.isLoggedIn();
-      console.log("LIFF init success", "SDK version:", liff.getVersion());
+      // console.log("LIFF init success", "SDK version:", liff.getVersion());
     } catch (error) {
       console.error("LIFF initialization failed:", error);
     }
@@ -30,7 +30,7 @@ export const useLiff = defineStore("liff", () => {
       profile: Profile;
     }>("/api/user", {
       key: "user",
-      method: "POST",
+      method: "GET",
       headers: {
         authorization: `${liff.getIDToken()}}`
       },
@@ -72,6 +72,10 @@ export const useLiff = defineStore("liff", () => {
     return liff.getIDToken();
   }
 
+  function isInClient () {
+    return liff.isInClient();
+  }
+
   function checkTokenValidity () {
     const payload = liff.getDecodedIDToken();
     // check exp in payload and determine if token is expired
@@ -93,6 +97,7 @@ export const useLiff = defineStore("liff", () => {
     user,
     setUser,
     logout,
+    isInClient,
     getAccessToken,
     getIdToken,
     scanCode,
