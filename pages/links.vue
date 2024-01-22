@@ -22,7 +22,7 @@
 </template>
 
 <script setup lang="ts">
-import { ArrowTopRightIcon, ReaderIcon, PersonIcon, CornersIcon } from "@radix-icons/vue";
+import { ArrowTopRightIcon, ReaderIcon, PersonIcon, Component2Icon, CornersIcon, CardStackIcon } from "@radix-icons/vue";
 const liff = useLiff();
 const isSpeaker = ref(liff.user!.type.speaker);
 
@@ -31,6 +31,10 @@ useHead({
 });
 
 const navLinks = ref([{
+  title: "集章冊",
+  href: "/",
+  icon: Component2Icon
+}, {
   title: "活動議程",
   href: "/agenda",
   icon: ReaderIcon
@@ -47,7 +51,7 @@ const navLinks = ref([{
 }, {
   title: "折價券",
   href: "/coupons",
-  icon: ArrowTopRightIcon
+  icon: CardStackIcon
 }
 ]
 );
