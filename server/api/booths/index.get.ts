@@ -6,12 +6,17 @@ export default defineAuthEventHandler(async (event, user) => {
   const supabaseService = serverSupabaseServiceRole<Database>(event);
 
   // run parallel to fetch booth data and stamp data
-  const [{ data: booths, error: boothError }, { data: stamps, error: stampError }] = await Promise.all([
+  const [{ data: booths, error: boothError }, { data: stamps, error: stampError, count: stampCount }] = await Promise.all([
     supabaseService.from("booth").select("*"),
     supabaseService.from("stamp").select(`
       *,
       user!inner(line_id)
-    `).eq("user.line_id", user.userId)
+    `, {
+      count: "exact"
+    }).eq("user.line_id", user.userId),
+    supabaseService.from("speaker").select("*, user(line_id)", {
+      count: "exact"
+    }).eq("user.line_id", user.userId)
   ]);
 
   if (boothError) {

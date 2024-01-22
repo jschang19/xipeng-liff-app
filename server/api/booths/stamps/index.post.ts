@@ -16,8 +16,8 @@ export default defineAuthEventHandler(async (event, user) => {
 
   const supabaseService = serverSupabaseServiceRole<Database>(event);
   const [{
-    data: participantUUID,
-    error: participantUUIDError
+    data: participant,
+    error: participantError
   }, {
     data: staffRecord,
     error: staffRecordError
@@ -31,9 +31,9 @@ export default defineAuthEventHandler(async (event, user) => {
     `).eq("user.line_id", user.userId).maybeSingle()
   ]);
 
-  if (participantUUIDError || staffRecordError) {
+  if (participantError || staffRecordError) {
     setResponseStatus(event, 500);
-    console.error(participantUUIDError || staffRecordError);
+    console.error(participantError || staffRecordError);
     return {
       status: "error",
       message: "Failed to fetch data"
@@ -48,7 +48,7 @@ export default defineAuthEventHandler(async (event, user) => {
     };
   }
 
-  if (!participantUUID) {
+  if (!participant) {
     setResponseStatus(event, 404);
     return {
       status: "error",
@@ -57,7 +57,7 @@ export default defineAuthEventHandler(async (event, user) => {
   }
 
   // add stamp data to supabase
-  const { error: stampError } = await supabaseService.from("stamp").upsert({ user_id: participantUUID.id, booth_id: staffRecord.booth_id }, {
+  const { error: stampError } = await supabaseService.from("stamp").upsert({ user_id: participant.id, booth_id: staffRecord.booth_id, scanned_by: user.userId }, {
     onConflict: "user_id,booth_id"
   });
 
@@ -72,8 +72,8 @@ export default defineAuthEventHandler(async (event, user) => {
     )
   `, {
       count: "exact"
-    }).eq("user_id", participantUUID.id),
-    supabaseService.from("user_coupon").select("*", { count: "exact", head: true }).eq("user_id", participantUUID.id)
+    }).eq("user_id", participant.id),
+    supabaseService.from("user_coupon").select("*", { count: "exact", head: true }).eq("user_id", participant.id)
   ]);
 
   if (stampsError || stampCount === null) {
@@ -100,7 +100,7 @@ export default defineAuthEventHandler(async (event, user) => {
         authorization: getRequestHeaders(event).authorization!
       },
       body: {
-        participantId: participantUUID.id
+        participantId: participant.id
       }
     });
   }
