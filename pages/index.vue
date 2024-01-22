@@ -11,13 +11,11 @@
           </div>
         </div>
       </div>
-      <div v-if="boothPending" class="py-10">
-        <div class="flex flex-col flex-1 items-center justify-center">
-          <Loader2 class="w-8 h-8 text-black animate-spin" />
-        </div>
+      <div v-if="boothPending" class="flex flex-col flex-1 items-center justify-center">
+        <Loader2 class="w-8 h-8 text-black animate-spin" />
       </div>
       <FetchError v-else-if="boothError" />
-      <div v-else class="grid grid-cols-4 place-items-center rounded-lg border-2">
+      <div v-else class="grid grid-cols-4 place-items-center rounded-lg border-2 mx-auto">
         <Dialog>
           <div v-for="booth in booths" :key="booth.id" class="flex items-center justify-center relative">
             <DialogTrigger @click="handleTriggered(booth.id)">
