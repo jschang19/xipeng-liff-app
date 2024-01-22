@@ -1,9 +1,11 @@
 <template>
-  <div v-if="liff.user" class="w-full h-14 bg-white fixed top-auto bottom-0 shadow-sm items-center flex justify-around sm:hidden">
-    <div v-for="(link, index) in links" :key="index" class="flex flex-col items-center justify-center py-3">
-      <NuxtLink :to="link.link" class="flex flex-col items-center justify-center">
-        <Component :is="link.icon" :class="activeLink === index ? 'text-gray-500' : 'text-black'" class="w-6 h-6" />
-      </NuxtLink>
+  <div v-if="liff.user" class="w-full h-14 bg-white fixed top-auto bottom-0 shadow-sm">
+    <div class="flex items-center justify-around max-w-md mx-auto">
+      <div v-for="(link, index) in links" :key="index" class="flex flex-col items-center justify-center py-3">
+        <NuxtLink :to="link.link" class="flex flex-col items-center justify-center">
+          <Component :is="link.icon" :class="activeLink === index ? 'text-gray-500' : 'text-black'" class="w-6 h-6" />
+        </NuxtLink>
+      </div>
     </div>
   </div>
 </template>
