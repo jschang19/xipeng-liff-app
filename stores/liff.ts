@@ -32,13 +32,14 @@ export const useLiff = defineStore("liff", () => {
   async function setUser () {
     // upsert user and fetch user data from supabase at same time
     // to keep user data up to date
+
     const { data: upsertedUser, error } = await useFetch<{
       profile: Profile;
     }>("/api/user", {
       key: "user",
       method: "GET",
       headers: {
-        authorization: `${liff.getIDToken()}}`
+        authorization: `${liff.getIDToken()}`
       },
       pick: ["profile"]
     });
