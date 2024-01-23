@@ -1,5 +1,5 @@
 <template>
-  <div class="flex size-full flex-col px-6">
+  <div class="flex size-full w-full flex-col items-center px-6">
     <div class="size-full max-w-md py-8">
       <h1 class="py-4 text-2xl font-bold">
         你的優惠券
