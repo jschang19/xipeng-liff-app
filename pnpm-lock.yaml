@@ -94,6 +94,9 @@ devDependencies:
   eslint:
     specifier: ^8.56.0
     version: 8.56.0
+  eslint-plugin-tailwindcss:
+    specifier: ^3.14.0
+    version: 3.14.0(tailwindcss@3.4.0)
   nuxt:
     specifier: ^3.8.2
     version: 3.8.2(eslint@8.56.0)(typescript@5.3.3)(vite@4.5.1)
@@ -4801,6 +4804,17 @@ packages:
       eslint: ^7.0.0 || ^8.0.0
     dependencies:
       eslint: 8.56.0
+    dev: true
+
+  /eslint-plugin-tailwindcss@3.14.0(tailwindcss@3.4.0):
+    resolution: {integrity: sha512-SGy4JmZoP5m1bXCbcsPfQg1/axOdriJf9L22HghNMyDTM5mybg2XEkaMwgax4aR13zZJRRB1nWmkuYUn+SV6/Q==}
+    engines: {node: '>=12.13.0'}
+    peerDependencies:
+      tailwindcss: ^3.4.0
+    dependencies:
+      fast-glob: 3.3.2
+      postcss: 8.4.32
+      tailwindcss: 3.4.0
     dev: true
 
   /eslint-plugin-unicorn@44.0.2(eslint@8.56.0):

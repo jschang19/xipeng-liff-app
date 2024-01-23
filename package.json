@@ -21,6 +21,7 @@
     "@types/uuid": "^9.0.7",
     "dayjs-nuxt": "^2.1.9",
     "eslint": "^8.56.0",
+    "eslint-plugin-tailwindcss": "^3.14.0",
     "nuxt": "^3.8.2",
     "shadcn-nuxt": "^0.1.0",
     "supabase": ">=1.8.1",
