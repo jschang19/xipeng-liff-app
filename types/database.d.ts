@@ -15,7 +15,6 @@ export interface Database {
           id: string
           image_url: string | null
           is_for_speaker: boolean
-          is_prefilled: boolean
           link: string | null
           name: string
           particapant_num: number
@@ -27,7 +26,6 @@ export interface Database {
           id?: string
           image_url?: string | null
           is_for_speaker?: boolean
-          is_prefilled?: boolean
           link?: string | null
           name: string
           particapant_num?: number
@@ -39,7 +37,6 @@ export interface Database {
           id?: string
           image_url?: string | null
           is_for_speaker?: boolean
-          is_prefilled?: boolean
           link?: string | null
           name?: string
           particapant_num?: number
@@ -182,6 +179,36 @@ export interface Database {
           }
         ]
       }
+      google_form_speaker: {
+        Row: {
+          email: string
+          id: number
+          major: string
+          name: string
+          phone: string
+          registered_at: string | null
+          university: string
+        }
+        Insert: {
+          email: string
+          id?: number
+          major: string
+          name: string
+          phone: string
+          registered_at?: string | null
+          university: string
+        }
+        Update: {
+          email?: string
+          id?: number
+          major?: string
+          name?: string
+          phone?: string
+          registered_at?: string | null
+          university?: string
+        }
+        Relationships: []
+      }
       speaker_profile: {
         Row: {
           bio: string | null
@@ -221,19 +248,25 @@ export interface Database {
         Row: {
           booth_id: string
           created_at: string
+          id: number
           scanned_by: string | null
+          type: Database["public"]["Enums"]["stamp_type"]
           user_id: string
         }
         Insert: {
           booth_id: string
           created_at?: string
+          id?: number
           scanned_by?: string | null
+          type: Database["public"]["Enums"]["stamp_type"]
           user_id: string
         }
         Update: {
           booth_id?: string
           created_at?: string
+          id?: number
           scanned_by?: string | null
+          type?: Database["public"]["Enums"]["stamp_type"]
           user_id?: string
         }
         Relationships: [
@@ -242,6 +275,13 @@ export interface Database {
             columns: ["booth_id"]
             isOneToOne: false
             referencedRelation: "booth"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "stamp_scanned_by_fkey"
+            columns: ["scanned_by"]
+            isOneToOne: false
+            referencedRelation: "user"
             referencedColumns: ["id"]
           },
           {
@@ -352,6 +392,7 @@ export interface Database {
     }
     Enums: {
       booth_type: "internal" | "external"
+      stamp_type: "booth" | "speaker"
       user_access: "1" | "49" | "99"
     }
     CompositeTypes: {
