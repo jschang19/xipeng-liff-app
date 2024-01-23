@@ -1,4 +1,6 @@
 import { type EventHandler, type EventHandlerRequest, H3Event } from "h3";
+import JwksRsa from "jwks-rsa";
+import jwt from "jsonwebtoken";
 import { serverSupabaseServiceRole } from "#supabase/server";
 import type { Profile } from "~/types";
 import type { Database } from "~/types/database";
@@ -12,70 +14,65 @@ interface LineVerifyResponse {
     name: string;
     picture: string;
     email: string;
-    error?: string;
   };
 
 export const defineAuthEventHandler = <T extends EventHandlerRequest, D> (
-  handler: (event: H3Event, user: FullProfile) => Promise<D>
+  handler: (event: H3Event, user: FullProfile) => Promise<D> | D
 ): EventHandler<T, D> =>
     defineEventHandler<T>(async (event) => {
+      const JWKS_URL = "https://api.line.me/oauth2/v2.1/certs";
+
       try {
         // get header  authorization
         const idToken = getRequestHeaders(event).authorization;
-        const config = useRuntimeConfig();
-        const cachedResponse = await useStorage<LineVerifyResponse>("redis").getItem(`auth:${idToken}`);
 
-        if (cachedResponse) {
-          const userData = await getProfileData(event, cachedResponse.sub);
+        if (!idToken) {
+          setResponseStatus(event, 401);
+          return {
+            status: "error",
+            message: "No token"
+          };
+        }
 
-          const user = setUser(userData, cachedResponse);
+        const client = JwksRsa({
+          jwksUri: JWKS_URL,
+          requestHeaders: {}, // Optional
+          timeout: 60 * 60 * 1000 // Signing keys will be cached for 1 hour.
+        });
+
+        const decoded = jwt.decode(idToken, { complete: true }); // eslint-disable-line
+
+        if (!decoded?.header) {
+          setResponseStatus(event, 401);
+          return {
+            status: "error",
+            message: "Empty token"
+          };
+        }
+
+        const signinKey = await client.getSigningKey(decoded.header.kid);
+
+        try {
+          const verifyResponse = jwt.verify(idToken, signinKey.getPublicKey(), { // eslint-disable-line
+            algorithms: ["ES256"]
+          }) as unknown as LineVerifyResponse;
+
+          const [userData] = await Promise.all([
+            getProfileData(event, verifyResponse.sub)
+          ]);
+          const user = setUser(userData, verifyResponse);
 
           return handler(event, user);
+        } catch (err) {
+          console.error(err);
+          setResponseStatus(event, 401);
+          return {
+            status: "error",
+            message: "Invalid token"
+          };
         }
-
-        // If not cached, verify token
-
-        const lineResponse = await fetch("https://api.line.me/oauth2/v2.1/verify", {
-          method: "POST",
-          headers: {
-            content_type: "application/x-www-form-urlencoded"
-          },
-          body: new URLSearchParams({
-            id_token: idToken as string,
-            client_id: config.CLIENT_ID
-          }),
-          cache: "no-cache"
-        });
-        const verifyResponse = await lineResponse.json();
-        await useStorage<LineVerifyResponse>("redis").setItem(`auth:${idToken}`, verifyResponse, { ttl: 60 * 10 });
-
-        // check if error is in the response
-        if (verifyResponse.error) {
-          // console.error("error", data.error);
-
-          if (verifyResponse.error === "invalid_request") {
-            setResponseStatus(event, 401);
-            return {
-              status: "error",
-              message: "Invalid token"
-            };
-          } else {
-            setResponseStatus(event, 500);
-            return {
-              status: "error",
-              message: verifyResponse.error.error_description
-            };
-          }
-        }
-
-        const userData = await getProfileData(event, verifyResponse.sub);
-
-        const user = setUser(userData, verifyResponse);
-
-        return handler(event, user);
       } catch (err) {
         setResponseStatus(event, 500);
-        console.error("error", err);
         throw err;
       }
     });
@@ -83,7 +80,10 @@ export const defineAuthEventHandler = <T extends EventHandlerRequest, D> (
 async function getProfileData (event: H3Event, userId: string) {
   const { data: userData, error: userError } = await serverSupabaseServiceRole<Database>(event).from("user")
     .select(`
-            *,
+            id,
+            display_name,
+            picture_url,
+            email,
             event_speaker(
               event_id
             ),
