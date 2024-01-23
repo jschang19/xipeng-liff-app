@@ -4,9 +4,14 @@ import type { Database } from "~/types/database";
 
 export default defineAuthEventHandler(async (event, user) => {
   const supabaseService = serverSupabaseServiceRole<Database>(event);
-  const { data: userCoupons, error } = await supabaseService
+  const {
+    data: userCoupons,
+    error,
+    count: userCouponCount
+  } = await supabaseService
     .from("user_coupon")
-    .select(`
+    .select(
+      `
       *,
       user (
         line_id
@@ -20,7 +25,13 @@ export default defineAuthEventHandler(async (event, user) => {
           image_url
         )
       )
-    `).eq("user.line_id", user.userId);
+    `,
+      {
+        count: "exact"
+      }
+    )
+    .eq("user.line_id", user.userId)
+    .order("id");
 
   if (error) {
     setResponseStatus(event, 500);
@@ -29,21 +40,28 @@ export default defineAuthEventHandler(async (event, user) => {
 
   const validCoupons = userCoupons.filter((coupon) => {
     // check if is_used and expire_at
-    return !coupon.used_at && coupon.coupon && dayjs(coupon.coupon.expire_at).isAfter(dayjs());
+    return (
+      !coupon.used_at &&
+      coupon.coupon &&
+      dayjs(coupon.coupon.expire_at).isAfter(dayjs())
+    );
   });
+
+  const allUsed = userCouponCount! > 0 && validCoupons.length === 0;
 
   return {
     coupons: validCoupons.map((coupon) => {
       return {
         id: coupon.id,
-        description: coupon.coupon.description,
-        expireAt: coupon.coupon.expire_at,
+        description: coupon.coupon!.description,
+        expireAt: coupon.coupon!.expire_at,
         store: {
-          name: coupon.coupon.store.name,
-          address: coupon.coupon.store.address,
-          imageUrl: coupon.coupon.store.image_url
+          name: coupon.coupon!.store!.name,
+          address: coupon.coupon!.store!.address,
+          imageUrl: coupon.coupon!.store!.image_url
         }
       };
-    })
+    }),
+    allUsed
   };
 });

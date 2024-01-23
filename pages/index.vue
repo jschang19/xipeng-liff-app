@@ -1,54 +1,78 @@
 <template>
-  <div class="h-full w-full flex flex-col justify-center items-center px-6">
-    <div class="flex flex-col space-y-6 h-full max-w-md w-full py-8">
+  <div class="flex size-full flex-col items-center justify-center px-6">
+    <div class="flex size-full max-w-md flex-col space-y-6 py-8">
       <div class="flex flex-col gap-8 py-4">
         <div class="space-y-3">
           <div class="text-2xl font-bold">
             集章冊
           </div>
-          <div class="text-md text-gray-500">
-            透過參與下午場博覽會攤位的活動，可以獲得對應的章，集滿 16 個章後，即可獲得獎勵。
+          <div class="text-base text-gray-500">
+            透過參與下午場博覽會攤位的活動，可以獲得對應的章，集滿 16
+            個章後，即可獲得獎勵。
           </div>
         </div>
       </div>
-      <div v-if="boothPending" class="flex flex-col flex-1 items-center justify-center">
-        <Loader2 class="w-8 h-8 text-black animate-spin" />
+      <div
+        v-if="stampPending"
+        class="flex flex-1 flex-col items-center justify-center"
+      >
+        <Loader2 class="size-8 animate-spin text-black" />
       </div>
-      <FetchError v-else-if="boothError" />
-      <div v-else class="grid grid-cols-4 place-items-center rounded-lg border-2 mx-auto">
-        <Dialog>
-          <div v-for="booth in booths" :key="booth.id" class="flex items-center justify-center relative">
-            <DialogTrigger @click="handleTriggered(booth.id)">
-              <div v-if="booth.hasStamp" class="absolute inset-0 flex items-center justify-center">
-                <div class="font-bold">
-                  已簽到
+      <FetchError v-else-if="stampError" />
+      <div v-else class="flex flex-col space-y-6">
+        <div
+          class="xs:grid-cols-2 mx-auto grid grid-cols-3 place-items-center rounded-md border-2"
+        >
+          <Dialog>
+            <div
+              v-for="stamp in stamps"
+              :key="stamp.id"
+              class="flex size-24 items-center justify-center border-2"
+            >
+              <div v-if="stamp.type === 'empty'" />
+              <div v-else DialogTrigger @click="handleTriggered(stamp.id)">
+                <DialogTrigger>
+                  <div class="flex size-full flex-col justify-between p-1">
+                    <NuxtImg
+                      src="https://fakeimg.pl/300x300"
+                      width="100"
+                      height="100"
+                      class="size-full"
+                    />
+                  </div>
+                </DialogTrigger>
+              </div>
+            </div>
+            <DialogContent class="sm:max-w-md">
+              <DialogHeader>
+                <DialogTitle>{{ triggeredStamp?.booth.name }}</DialogTitle>
+              </DialogHeader>
+              <DialogDescription>
+                <div class="flex items-center space-x-2">
+                  {{ triggeredStamp?.booth.description }}
                 </div>
-              </div>
-              <div class="h-full w-full flex flex-col justify-between p-2" :class="booth.hasStamp && `opacity-15`">
-                <NuxtImg src="https://fakeimg.pl/300x300" width="100" height="100" class="w-18 h-18" />
-              </div>
-            </DialogTrigger>
-          </div>
-          <DialogContent class="sm:max-w-md">
-            <DialogHeader>
-              <DialogTitle>{{ triggeredBooth!.name }}</DialogTitle>
-            </DialogHeader>
-            <DialogDescription>
-              <div class="flex items-center space-x-2">
-                {{ triggeredBooth!.description }}
-              </div>
-            </DialogDescription>
-            <DialogFooter v-if="triggered" class="sm:justify-start">
-              <DialogClose as-child>
-                <NuxtLink v-show="triggeredBooth!.link" :to="triggeredBooth!.link + '?openExternalBrowser=1'" class="mx-auto" target="_blank">
-                  <Button type="button" variant="link">
-                    前往網站
-                  </Button>
-                </NuxtLink>
-              </DialogClose>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+              </DialogDescription>
+              <DialogFooter
+                v-if="triggeredStamp?.booth.link"
+                class="sm:justify-start"
+              >
+                <DialogClose as-child>
+                  <NuxtLink
+                    v-show="triggeredStamp.booth.link"
+                    :to="triggeredStamp.booth.link + '?openExternalBrowser=1'"
+                    class="mx-auto"
+                    target="_blank"
+                  >
+                    <Button type="button" variant="link">
+                      前往網站
+                    </Button>
+                  </NuxtLink>
+                </DialogClose>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        </div>
+        <StampHint v-if="stamps" :stamps="stamps" />
       </div>
     </div>
   </div>
@@ -56,45 +80,56 @@
 
 <script setup lang="ts">
 import { Loader2 } from "lucide-vue-next";
+import type { Stamp } from "@/types";
 
 useHead({
   title: "集章冊"
 });
 
-interface Booth {
-  id: string;
-  name: string;
-  description: string;
-  link: string;
-  hasStamp: boolean;
-}
-
 const liff = useLiff();
-const booths = ref<Booth[]>();
+const stamps = ref<Stamp[]>([]);
+const USER_MAX_STAMP_NUM = 9;
 
-const { error: boothError, pending: boothPending } = await useFetch<{
-  booths: Booth[];
-}>("/api/booths", {
+const { error: stampError, pending: stampPending } = await useFetch<{
+  stamps: Stamp[];
+}>("/api/user/stamp", {
+  method: "GET",
   headers: {
-    Authorization: `${liff.getIdToken()}`
+    authorization: `${liff.getIdToken()}`
   },
+  pick: ["stamps"],
   lazy: true,
-  pick: ["booths"],
   onResponse: ({ response }) => {
-    booths.value = response._data.booths;
+    stamps.value = response._data.stamps;
+
+    if (response._data.stamps.length < USER_MAX_STAMP_NUM) {
+      const emptyStampNum = USER_MAX_STAMP_NUM - response._data.stamps.length;
+
+      // add empty stamps
+      for (let i = 0; i < emptyStampNum; i++) {
+        stamps.value.push({
+          id: `empty-${i}`,
+          type: "empty",
+          booth: {
+            name: "",
+            description: "",
+            imageUrl: "",
+            link: ""
+          }
+        });
+      }
+    }
+
+    console.log(stamps.value);
   }
 });
 
 const triggeredId = ref("");
-const triggeredBooth = computed(() => {
-  return booths.value!.find(booth => booth.id === triggeredId.value);
-});
-const triggered = computed(() => {
-  return triggeredBooth.value !== undefined;
+const triggeredStamp = computed(() => {
+  return stamps.value.find(stamp => stamp.id === triggeredId.value);
 });
 
 function handleTriggered (id: string) {
   triggeredId.value = id;
 }
-
 </script>

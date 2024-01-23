@@ -6,14 +6,27 @@ export default defineAuthEventHandler(async (event, user) => {
   const supabaseService = serverSupabaseServiceRole<Database>(event);
   const couponId = getRouterParam(event, "id");
 
+  if (!couponId) {
+    setResponseStatus(event, 400);
+    return {
+      status: "error",
+      message: "Invalid request"
+    };
+  }
+
   const { data: userCoupons, error } = await supabaseService
     .from("user_coupon")
-    .select(`
+    .select(
+      `
       *,
       user(
         line_id
       )
-    `).eq("id", couponId).eq("user.line_id", user.userId).single();
+    `
+    )
+    .eq("id", couponId)
+    .eq("user.line_id", user.userId)
+    .single();
 
   if (error) {
     console.error(error);
@@ -48,9 +61,12 @@ export default defineAuthEventHandler(async (event, user) => {
     };
   }
 
-  const { error: updateError } = await supabaseService.from("user_coupon").update({
-    used_at: dayjs().locale("Asia/Taipei").toISOString()
-  }).eq("id", couponId);
+  const { error: updateError } = await supabaseService
+    .from("user_coupon")
+    .update({
+      used_at: dayjs().locale("Asia/Taipei").toISOString()
+    })
+    .eq("id", couponId);
 
   if (updateError) {
     console.error(updateError);

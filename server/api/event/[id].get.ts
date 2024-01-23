@@ -29,7 +29,8 @@ export default defineAuthEventHandler(async (event) => {
     supabaseService.from("event").select("*").eq("id", eventId).single(),
     supabaseService
       .from("event_speaker")
-      .select(`*,
+      .select(
+        `*,
          user (
             display_name,
             picture_url,
@@ -39,7 +40,8 @@ export default defineAuthEventHandler(async (event) => {
               university_name,
               major_name
             )
-          )`)
+          )`
+      )
       .eq("event_id", eventId)
   ]);
 
@@ -70,7 +72,9 @@ export default defineAuthEventHandler(async (event) => {
       endAt: eventResult.end_at
     },
     speakers: speakersResult.map(speaker => ({
-      name: speaker.user!.speaker_profile?.display_name || speaker.user!.display_name,
+      name:
+        speaker.user!.speaker_profile?.display_name ||
+        speaker.user!.display_name,
       pictureUrl: speaker.user!.picture_url || "",
       bio: speaker.user!.speaker_profile?.bio || "",
       universityName: speaker.user!.speaker_profile?.university_name,

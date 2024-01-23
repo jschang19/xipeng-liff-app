@@ -5,7 +5,8 @@ export default defineAuthEventHandler(async (event, user) => {
   const supabaseService = serverSupabaseServiceRole<Database>(event);
   const { data: speakerResult, error: speakerError } = await supabaseService
     .from("event_speaker")
-    .select(`
+    .select(
+      `
       *,
       user(
         line_id,
@@ -16,7 +17,9 @@ export default defineAuthEventHandler(async (event, user) => {
           bio
         )
       )
-    `).eq("user.line_id", user.userId);
+    `
+    )
+    .eq("user.line_id", user.userId);
 
   if (speakerError) {
     console.error(speakerError);

@@ -10,18 +10,20 @@ export default defineEventHandler(async (event) => {
   const { participantId } = await readBody(event);
   // check if user already has coupons
 
-  const [
-    { count, error },
-    { count: userCount, error: userCountError }
-  ] = await Promise.all([
-    supabaseService
-      .from("user_coupon")
-      .select("*", { count: "exact", head: true }).eq("user_id", participantId),
-    supabaseService.from("user").select("*", {
-      count: "exact",
-      head: true
-    }).eq("id", participantId)
-  ]);
+  const [{ count, error }, { count: userCount, error: userCountError }] =
+    await Promise.all([
+      supabaseService
+        .from("user_coupon")
+        .select("*", { count: "exact", head: true })
+        .eq("user_id", participantId),
+      supabaseService
+        .from("user")
+        .select("*", {
+          count: "exact",
+          head: true
+        })
+        .eq("id", participantId)
+    ]);
 
   if (error || userCountError || count === null || userCount === null) {
     setResponseStatus(event, 500);
@@ -44,10 +46,11 @@ export default defineEventHandler(async (event) => {
     };
   }
 
-  const {
-    data: defaultCoupons,
-    error: defaultCouponsError
-  } = await supabaseService.from("coupon").select("*").gte("expire_at", dayjs().toISOString());
+  const { data: defaultCoupons, error: defaultCouponsError } =
+    await supabaseService
+      .from("coupon")
+      .select("*")
+      .gte("expire_at", dayjs().toISOString());
 
   if (defaultCouponsError || !defaultCoupons) {
     setResponseStatus(event, 500);
@@ -56,13 +59,17 @@ export default defineEventHandler(async (event) => {
     };
   }
 
-  const couponData : {
+  console.log(defaultCoupons);
+
+  const couponData: {
     coupon_id: string;
     user_id: string;
   }[] = [];
 
   defaultCoupons
-    .filter(coupon => coupon.quantity === 0 || coupon.issued_num < coupon.quantity)
+    .filter(
+      coupon => coupon.quantity === 0 || coupon.issued_num < coupon.quantity
+    )
     .forEach((coupon) => {
       for (let i = 0; i < coupon.default_num; i++) {
         couponData.push({
@@ -74,9 +81,12 @@ export default defineEventHandler(async (event) => {
 
   if (couponData.length === 0) {
     return {
-      message: "No coupons inserted, maybe all coupons are expired or reached issue limit"
+      message:
+        "No coupons inserted, maybe all coupons are expired or reached issue limit"
     };
   }
+
+  console.log(couponData);
 
   // The issued_num will be update by postgreSQL trigger automatically
   const { error: insertError } = await supabaseService
