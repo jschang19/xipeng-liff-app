@@ -4,13 +4,11 @@ import type { Database } from "~/types/database";
 export default defineAuthEventHandler(async (event, user) => {
   // add user into supabase by upsert
   const supabaseService = serverSupabaseServiceRole<Database>(event);
-
   const { error } = await supabaseService.from("user").upsert(
     {
       line_id: user.userId,
       display_name: user.displayName,
-      picture_url: user.pictureUrl,
-      email: user.email
+      picture_url: user.pictureUrl
     },
     {
       onConflict: "line_id"

@@ -2,9 +2,9 @@
   <div class="flex size-full flex-col items-center justify-center px-6 py-8">
     <div class="size-full max-w-md space-y-3">
       <div class="py-4">
-        <div class="text-2xl font-bold">
+        <h1 class="text-2xl font-bold">
           活動連結
-        </div>
+        </h1>
       </div>
 
       <div class="grid grid-cols-4 gap-8">

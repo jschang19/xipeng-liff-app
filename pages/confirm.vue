@@ -2,8 +2,13 @@
 import { Loader2 } from "lucide-vue-next";
 const liff = useLiff();
 
+definePageMeta({
+  title: "登入中",
+  layout: "signin"
+});
+
 watchEffect(() => {
-  if (liff.isLoggedIn) {
+  if (liff.user) {
     navigateTo("/");
   }
 });

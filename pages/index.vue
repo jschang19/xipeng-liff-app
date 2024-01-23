@@ -3,12 +3,11 @@
     <div class="flex size-full max-w-md flex-col space-y-6 py-8">
       <div class="flex flex-col gap-8 py-4">
         <div class="space-y-3">
-          <div class="text-2xl font-bold">
+          <h1 class="text-2xl font-bold">
             集章冊
-          </div>
+          </h1>
           <div class="text-base text-gray-500">
-            透過參與下午場博覽會攤位的活動，可以獲得對應的章，集滿 16
-            個章後，即可獲得獎勵。
+            透過參與下午場博覽會攤位的活動，可以獲得對應的章，集滿 9 個章後，即可獲得獎勵。
           </div>
         </div>
       </div>
@@ -119,8 +118,6 @@ const { error: stampError, pending: stampPending } = await useFetch<{
         });
       }
     }
-
-    console.log(stamps.value);
   }
 });
 

@@ -1,11 +1,10 @@
 <template>
   <div class="flex size-full flex-col px-6">
     <div class="size-full max-w-md py-8">
-      <div class="space-y-1 py-4">
-        <div class="text-2xl font-bold">
-          你的優惠券
-        </div>
-      </div>
+      <h1 class="py-4 text-2xl font-bold">
+        你的優惠券
+      </h1>
+
       <div
         v-if="pending"
         class="flex size-full flex-col items-center justify-center"

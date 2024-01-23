@@ -1,9 +1,9 @@
 <template>
   <div class="flex size-full flex-col items-center justify-center px-6 py-8">
     <div class="size-full max-w-md space-y-3">
-      <div class="py-4 text-2xl font-bold">
-        個人資料
-      </div>
+      <h1 class="py-4 text-2xl font-bold">
+        編輯個人資料
+      </h1>
       <div
         v-if="pending"
         class="flex h-full flex-col items-center justify-center"
@@ -93,6 +93,7 @@ useHead({
   title: "個人資料"
 });
 
+const route = useRoute();
 const liff = useLiff();
 const isSpeaker = ref(liff.user?.type.speaker);
 const formSchema = toTypedSchema(
@@ -117,7 +118,7 @@ if (!isSpeaker.value) {
 }
 
 const { error: ProfileError, pending } = await useFetch(
-  "/api/speakers/profile",
+  "/api/speakers",
   {
     method: "GET",
     headers: {
@@ -146,7 +147,7 @@ const form = useForm({
 });
 
 const onSubmit = form.handleSubmit(async (values) => {
-  await useFetch("/api/speakers/profile", {
+  await useFetch("/api/speakers", {
     method: "PUT",
     headers: {
       authorization: `${liff.getIdToken()}`,
@@ -168,5 +169,14 @@ const onSubmit = form.handleSubmit(async (values) => {
       }
     }
   });
+});
+
+onMounted(() => {
+  if (route.query && route.query.fromRegister) {
+    toast({
+      title: "註冊成功",
+      description: "你已成功註冊成為講者"
+    });
+  }
 });
 </script>

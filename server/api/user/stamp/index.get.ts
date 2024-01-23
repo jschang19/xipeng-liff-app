@@ -9,11 +9,13 @@ export default defineAuthEventHandler(async (event, user) => {
   const { data: userStamps, error: userStampsError } = await supabaseService
     .from("stamp")
     .select(
-      `*,booth (
-      name,
-      description,
-      link,
-      image_url
+      `
+      type,
+      booth (
+        name,
+        description,
+        link,
+        image_url
     )`
     )
     .eq("user_id", user.uuid)
