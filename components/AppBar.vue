@@ -1,9 +1,23 @@
 <template>
-  <div v-if="liff.user" class="w-full h-14 bg-white fixed top-auto bottom-0 shadow-sm">
+  <div
+    v-if="liff.user"
+    class="w-full h-14 bg-white fixed top-auto bottom-0 shadow-sm"
+  >
     <div class="flex items-center justify-around max-w-md mx-auto">
-      <div v-for="(link, index) in links" :key="index" class="flex flex-col items-center justify-center py-3">
-        <NuxtLink :to="link.link" class="flex flex-col items-center justify-center">
-          <Component :is="link.icon" :class="activeLink === index ? 'text-gray-500' : 'text-black'" class="w-6 h-6" />
+      <div
+        v-for="(link, index) in links"
+        :key="index"
+        class="flex flex-col items-center justify-center py-3"
+      >
+        <NuxtLink
+          :to="link.link"
+          class="flex flex-col items-center justify-center"
+        >
+          <Component
+            :is="link.icon"
+            :class="activeLink === index ? 'text-gray-500' : 'text-black'"
+            class="w-6 h-6"
+          />
         </NuxtLink>
       </div>
     </div>
@@ -26,13 +40,14 @@ const links = ref([
   {
     link: "/qrcode",
     icon: CornersIcon
-  }, {
+  },
+  {
     link: "/links",
     icon: MixIcon
   }
 ]);
 
 const activeLink = computed(() => {
-  return links.value.findIndex(link => link.link === route.path);
+  return links.value.findIndex((link) => link.link === route.path);
 });
 </script>

@@ -1,16 +1,19 @@
 <template>
-  <div class="h-full w-full flex flex-col px-6 justify-center items-center">
-    <div class="h-full max-w-md w-full py-8">
-      <div class="text-2xl py-4 font-bold">
+  <div class="flex size-full flex-col items-center justify-center px-6">
+    <div class="size-full max-w-md py-8">
+      <div class="py-4 text-2xl font-bold">
         今日議程
       </div>
-      <div v-if="eventPending" class="flex h-full justify-center items-center">
-        <Loader2 class="w-8 h-8 animate-spin" />
+      <div v-if="eventPending" class="flex h-full items-center justify-center">
+        <Loader2 class="size-8 animate-spin" />
       </div>
       <div v-else class="flex flex-col gap-5">
         <div v-for="event in events" :key="event.id">
           <Card>
-            <CardContent class="pt-6 flex flex-col gap-2" :class="checkIsOver(event) === true ? 'opacity-40':''">
+            <CardContent
+              class="flex flex-col gap-2 pt-6"
+              :class="checkIsOver(event) === true ? 'opacity-40' : ''"
+            >
               <div class="flex gap-2">
                 <Badge variant="secondary">
                   {{ event.place }}
@@ -42,11 +45,11 @@ useHead({
 
 interface Event {
   id: string;
-    title: string;
-    place: string;
-    startAt: number;
-    endAt: number;
-};
+  title: string;
+  place: string;
+  startAt: number;
+  endAt: number;
+}
 
 const liff = useLiff();
 const dayjs = useDayjs();

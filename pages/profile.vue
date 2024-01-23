@@ -1,27 +1,40 @@
 <template>
-  <div class="h-full w-full py-8 flex flex-col justify-center items-center px-6">
-    <div class="h-full max-w-md w-full space-y-3">
+  <div class="flex size-full flex-col items-center justify-center px-6 py-8">
+    <div class="size-full max-w-md space-y-3">
       <div class="py-4 text-2xl font-bold">
         個人資料
       </div>
-      <div v-if="pending" class="flex flex-col items-center justify-center h-full">
-        <Loader2 class="w-8 h-8 animate-spin" />
+      <div
+        v-if="pending"
+        class="flex h-full flex-col items-center justify-center"
+      >
+        <Loader2 class="size-8 animate-spin" />
       </div>
       <FetchError v-else-if="ProfileError" />
-      <form v-else-if="!pending && isSpeaker" class="space-y-4" @submit="onSubmit">
-        <FormField v-slot="{ componentField }" name="name" :model-value="prefillData.name">
+      <form
+        v-else-if="!pending && isSpeaker"
+        class="space-y-4"
+        @submit="onSubmit"
+      >
+        <FormField
+          v-slot="{ componentField }"
+          name="name"
+          :model-value="prefillData.name"
+        >
           <FormItem>
             <FormLabel>全名</FormLabel>
             <FormControl>
               <Input type="text" v-bind="componentField" />
             </FormControl>
-            <FormDescription>
-              這會顯示在講者介紹上
-            </FormDescription>
+            <FormDescription>這會顯示在講者介紹上</FormDescription>
             <FormMessage />
           </FormItem>
         </FormField>
-        <FormField v-slot="{ componentField }" name="university" :model-value="prefillData.university">
+        <FormField
+          v-slot="{ componentField }"
+          name="university"
+          :model-value="prefillData.university"
+        >
           <FormItem>
             <FormLabel>大學名稱</FormLabel>
             <FormControl>
@@ -33,7 +46,11 @@
             <FormMessage />
           </FormItem>
         </FormField>
-        <FormField v-slot="{ componentField }" name="major" :model-value="prefillData.major">
+        <FormField
+          v-slot="{ componentField }"
+          name="major"
+          :model-value="prefillData.major"
+        >
           <FormItem>
             <FormLabel>科系名稱</FormLabel>
             <FormControl>
@@ -45,7 +62,11 @@
             <FormMessage />
           </FormItem>
         </FormField>
-        <FormField v-slot="{ componentField }" name="bio" :model-value="prefillData.bio">
+        <FormField
+          v-slot="{ componentField }"
+          name="bio"
+          :model-value="prefillData.bio"
+        >
           <FormItem>
             <FormLabel>個人介紹</FormLabel>
             <FormControl>
@@ -74,12 +95,14 @@ useHead({
 
 const liff = useLiff();
 const isSpeaker = ref(liff.user?.type.speaker);
-const formSchema = toTypedSchema(z.object({
-  name: z.string().min(1).max(10),
-  university: z.string().min(1).max(25),
-  major: z.string().min(1).max(25),
-  bio: z.string().min(2).max(150).optional()
-}));
+const formSchema = toTypedSchema(
+  z.object({
+    name: z.string().min(1).max(10),
+    university: z.string().min(1).max(25),
+    major: z.string().min(1).max(25),
+    bio: z.string().min(2).max(150).optional()
+  })
+);
 const prefillData = ref({
   name: "",
   university: "",
@@ -123,30 +146,27 @@ const form = useForm({
 });
 
 const onSubmit = form.handleSubmit(async (values) => {
-  await useFetch(
-    "/api/speakers/profile",
-    {
-      method: "PUT",
-      headers: {
-        authorization: `${liff.getIdToken()}`,
-        contentType: "application/json"
-      },
-      body: JSON.stringify(values),
-      onResponseError: () => {
+  await useFetch("/api/speakers/profile", {
+    method: "PUT",
+    headers: {
+      authorization: `${liff.getIdToken()}`,
+      contentType: "application/json"
+    },
+    body: JSON.stringify(values),
+    onResponseError: () => {
+      toast({
+        title: "更新失敗",
+        description: "請稍後再試"
+      });
+    },
+    onResponse: ({ response }) => {
+      if (response.status === 200) {
         toast({
-          title: "更新失敗",
-          description: "請稍後再試"
+          title: "更新成功",
+          description: "你的講者資料已更新"
         });
-      },
-      onResponse: ({ response }) => {
-        if (response.status === 200) {
-          toast({
-            title: "更新成功",
-            description: "你的講者資料已更新"
-          });
-        }
       }
     }
-  );
+  });
 });
 </script>

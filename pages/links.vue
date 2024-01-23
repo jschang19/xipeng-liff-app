@@ -1,6 +1,6 @@
 <template>
-  <div class="h-full w-full py-8 flex flex-col justify-center items-center px-6">
-    <div class="h-full max-w-md w-full space-y-3">
+  <div class="flex size-full flex-col items-center justify-center px-6 py-8">
+    <div class="size-full max-w-md space-y-3">
       <div class="py-4">
         <div class="text-2xl font-bold">
           活動連結
@@ -9,9 +9,13 @@
 
       <div class="grid grid-cols-4 gap-8">
         <div v-for="link in navLinks" :key="link.title">
-          <NuxtLink :to="link.href" class="flex flex-col gap-3 aspect-square h-[4.5rem] shadow-none text-slate-600" :target="link.openNewTab ? '_blank' : null">
-            <Component :is="link.icon" class="w-6 h-6 mx-auto" />
-            <div class="text-xs text-center font-medium">
+          <NuxtLink
+            :to="link.href"
+            class="flex aspect-square h-[4.5rem] flex-col gap-3 text-slate-600 shadow-none"
+            :target="link.openNewTab ? '_blank' : null"
+          >
+            <Component :is="link.icon" class="mx-auto size-6" />
+            <div class="text-center text-xs font-medium">
               {{ link.title }}
             </div>
           </NuxtLink>
@@ -22,7 +26,14 @@
 </template>
 
 <script setup lang="ts">
-import { ArrowTopRightIcon, ReaderIcon, PersonIcon, Component2Icon, CornersIcon, CardStackIcon } from "@radix-icons/vue";
+import {
+  ArrowTopRightIcon,
+  ReaderIcon,
+  PersonIcon,
+  Component2Icon,
+  CornersIcon,
+  CardStackIcon
+} from "@radix-icons/vue";
 const liff = useLiff();
 const isSpeaker = ref(liff.user!.type.speaker);
 
@@ -30,31 +41,34 @@ useHead({
   title: "活動連結"
 });
 
-const navLinks = ref([{
-  title: "集章冊",
-  href: "/",
-  icon: Component2Icon
-}, {
-  title: "活動議程",
-  href: "/agenda",
-  icon: ReaderIcon
-
-}, {
-  title: "QR Code",
-  href: "/qrcode",
-  icon: CornersIcon
-}, {
-  title: "活動官網",
-  href: "https://google.com",
-  icon: ArrowTopRightIcon,
-  openNewTab: true
-}, {
-  title: "折價券",
-  href: "/coupons",
-  icon: CardStackIcon
-}
-]
-);
+const navLinks = ref([
+  {
+    title: "集章冊",
+    href: "/",
+    icon: Component2Icon
+  },
+  {
+    title: "活動議程",
+    href: "/agenda",
+    icon: ReaderIcon
+  },
+  {
+    title: "QR Code",
+    href: "/qrcode",
+    icon: CornersIcon
+  },
+  {
+    title: "活動官網",
+    href: "https://google.com",
+    icon: ArrowTopRightIcon,
+    openNewTab: true
+  },
+  {
+    title: "折價券",
+    href: "/coupons",
+    icon: CardStackIcon
+  }
+]);
 
 if (isSpeaker.value) {
   navLinks.value.push({

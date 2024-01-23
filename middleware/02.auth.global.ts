@@ -19,7 +19,9 @@ export default defineNuxtRouteMiddleware((to, _) => {
 
   // Logic to redirect user to sign-in page if not logged in
   if (!tokenValid || !liff.isLoggedIn) {
-    if (!tokenValid && liff.isLoggedIn) { liff.logout(); } // Logout if token is expired
+    if (!tokenValid && liff.isLoggedIn) {
+      liff.logout();
+    } // Logout if token is expired
 
     return navigateTo(SIGN_IN_PATH);
   }

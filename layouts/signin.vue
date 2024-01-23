@@ -1,6 +1,6 @@
 <template>
   <AppContainer>
-    <main class="flex-1 w-full">
+    <main class="w-full flex-1">
       <slot />
     </main>
   </AppContainer>

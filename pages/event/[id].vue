@@ -1,26 +1,37 @@
 <template>
-  <div class="h-full w-full py-8 flex flex-col justify-center items-center px-6">
+  <div class="flex size-full flex-col items-center justify-center px-6 py-8">
     <div v-if="pending">
-      <Loader2 class="w-8 h-8 animate-spin" />
+      <Loader2 class="size-8 animate-spin" />
     </div>
-    <div v-else-if="!pending && eventError && eventError.statusCode === 400" class="flex flex-col">
+    <div
+      v-else-if="!pending && eventError && eventError.statusCode === 400"
+      class="flex flex-col"
+    >
       <div class="text-xl font-bold">
         找不到此活動
       </div>
-      <Button class="mt-4 mx-auto" @click="$router.push('/agenda')">
+      <Button class="mx-auto mt-4" @click="$router.push('/agenda')">
         回議程表
       </Button>
     </div>
     <FetchError v-else-if="eventError" />
-    <div v-else-if="event && event.info" class="h-full max-w-md w-full space-y-3">
+    <div v-else-if="event && event.info" class="size-full max-w-md space-y-3">
       <div class="pt-4">
         <div class="text-2xl font-bold">
           {{ event.info.title }}
         </div>
       </div>
       <div>
-        <EventInfoBlock label="時間" :value="formatTimeRange(event.info.startAt, event.info.endAt)" :icon="ClockIcon" />
-        <EventInfoBlock label="地點" :value="event.info.place" :icon="SewingPinIcon" />
+        <EventInfoBlock
+          label="時間"
+          :value="formatTimeRange(event.info.startAt, event.info.endAt)"
+          :icon="ClockIcon"
+        />
+        <EventInfoBlock
+          label="地點"
+          :value="event.info.place"
+          :icon="SewingPinIcon"
+        />
       </div>
       <div class="flex flex-col gap-6">
         <div class="space-y-2">
@@ -29,16 +40,21 @@
           </div>
           <div class="grid grid-cols-4 gap-1 py-3">
             <div class="col-span-4">
-              <div v-show="event.speakers.length === 0" class="text-sm text-gray-500 text-center">
+              <div
+                v-show="event.speakers.length === 0"
+                class="text-center text-sm text-gray-500"
+              >
                 目前沒有講者資料
               </div>
               <div v-for="speaker in event.speakers" :key="speaker.name">
                 <Dialog>
                   <DialogTrigger>
                     <div class="flex flex-col items-center space-y-2">
-                      <Avatar class="w-12 h-12">
+                      <Avatar class="size-12">
                         <AvatarImage :src="speaker.pictureUrl" />
-                        <AvatarFallback>{{ speaker.name.substring(0,1) }}</AvatarFallback>
+                        <AvatarFallback>
+                          {{ speaker.name.substring(0, 1) }}
+                        </AvatarFallback>
                       </Avatar>
                       <div class="text-sm">
                         {{ speaker.name }}
@@ -57,7 +73,9 @@
                           {{ speaker.universityName }} {{ speaker.majorName }}
                         </div>
                         <div class="text-sm text-black">
-                          {{ speaker.bio ?? "這位講者很神秘，沒有留下任何自介" }}
+                          {{
+                            speaker.bio ?? "這位講者很神秘，沒有留下任何自介"
+                          }}
                         </div>
                       </DialogDescription>
                     </div>
@@ -145,7 +163,8 @@ useHead({
   meta: [
     {
       name: "description",
-      content: event.value?.info.description ?? "這個活動很神秘，沒有留下任何說明"
+      content:
+        event.value?.info.description ?? "這個活動很神秘，沒有留下任何說明"
     }
   ]
 });
