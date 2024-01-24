@@ -34,15 +34,12 @@
             </TabsList>
           </div>
         </Tabs>
-        <div v-else>
+        <div v-else class="flex flex-col items-center justify-center">
           <div class="text-2xl font-bold">
             Your QR Code
           </div>
           <NuxtImg
             :src="qrCodeUrl"
-            class="size-32"
-            width="350"
-            height="350"
             preload
           />
           <div class="text-gray-500">
