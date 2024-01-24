@@ -109,7 +109,7 @@ function setUser (userData: {
 ): FullProfile {
   return {
     userId: data.sub,
-    uuid: userData!.id,
+    uuid: userData?.id ?? "",
     displayName: data.name,
     pictureUrl: data.picture,
     email: data.email ?? "",
