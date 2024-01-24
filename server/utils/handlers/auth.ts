@@ -81,9 +81,6 @@ async function getProfileData (event: H3Event, userId: string) {
   const { data: userData, error: userError } = await serverSupabaseServiceRole<Database>(event).from("user")
     .select(`
             id,
-            display_name,
-            picture_url,
-            email,
             event_speaker(
               event_id
             ),
@@ -102,9 +99,6 @@ async function getProfileData (event: H3Event, userId: string) {
 
 function setUser (userData: {
     id: string;
-    display_name: string;
-    picture_url: string | null;
-    email: string | null;
     event_speaker: {
         event_id: string;
     }[];
@@ -116,9 +110,9 @@ function setUser (userData: {
   return {
     userId: data.sub,
     uuid: userData!.id,
-    displayName: userData?.display_name ?? data.name,
-    pictureUrl: userData?.picture_url ?? data.picture,
-    email: userData?.email ?? data.email,
+    displayName: data.name,
+    pictureUrl: data.picture,
+    email: data.email ?? "",
     type: {
       staff: userData?.booth_staff ? userData?.booth_staff.length > 0 : false,
       speaker: userData?.event_speaker ? userData?.event_speaker.length > 0 : false
