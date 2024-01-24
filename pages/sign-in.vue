@@ -1,8 +1,5 @@
 <template>
   <div class="flex h-full flex-col">
-    <div class="pt-6 text-center text-lg font-bold">
-      攜澎引伴 2024
-    </div>
     <div class="flex h-full flex-col items-center justify-center gap-6">
       <h1 class="text-2xl font-bold">
         歡迎回來
