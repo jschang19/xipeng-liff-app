@@ -3,7 +3,6 @@ export default defineNuxtConfig({
   app: {
     head: {
       title: "攜澎引盼 2024 活動網站",
-      titleTemplate: "%s - 攜澎引盼 2024",
       htmlAttrs: {
         lang: "zh-Hant-TW"
       },
