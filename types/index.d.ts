@@ -2,7 +2,6 @@ interface Profile {
   userId: string;
   displayName: string;
   pictureUrl: string;
-  statusMessage?: string;
   email: string | null;
   type: {
     staff: boolean;
@@ -35,4 +34,8 @@ interface Stamp {
   };
 }
 
-export { Profile, Event, Stamp };
+interface FullProfile extends Profile {
+  uuid: string;
+}
+
+export { Profile, FullProfile, Event, Stamp };
