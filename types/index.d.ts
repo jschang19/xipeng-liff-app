@@ -1,5 +1,6 @@
 interface Profile {
   userId: string;
+  uuid?: string;
   displayName: string;
   pictureUrl: string;
   email: string | null;
@@ -12,15 +13,9 @@ interface Profile {
 interface Event {
   id: string;
   title: string;
-  type: "training" | "game";
-  isOpen: boolean;
-  repeatDay: 0 | 1 | 2 | 3 | 4 | 5 | 6;
-  createdBy: Profile;
-  createdAt: string;
-  startAt: string;
-  scope: 0 | 1;
-  place: string | null;
-  endAt: string;
+  place: string;
+  startAt: number;
+  endAt: number;
 }
 
 interface Stamp {
