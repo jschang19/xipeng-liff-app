@@ -129,6 +129,7 @@ const route = useRoute();
 const event = ref<Event | null>(null);
 const liff = useLiff();
 const eventId = route.params.id;
+const nuxtApp = useNuxtApp();
 
 const { error: eventError, pending } = await useFetch<{
   info: {
@@ -151,6 +152,13 @@ const { error: eventError, pending } = await useFetch<{
   onResponse: ({ response }) => {
     // set event
     event.value = response._data;
+  },
+  getCachedData (key) {
+    if (nuxtApp.payload.data[key]) {
+      event.value = nuxtApp.payload.data[key];
+    }
+
+    return nuxtApp.payload.data[key];
   }
 });
 

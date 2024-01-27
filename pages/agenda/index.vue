@@ -55,31 +55,30 @@ const liff = useLiff();
 const dayjs = useDayjs();
 const events: Ref<Event[]> = ref([]);
 const eventPending = ref(false);
+const nuxtApp = useNuxtApp();
 
-const cachedEvents = useNuxtData<{
-  events: Event[];
-}>("events");
-
-if (!cachedEvents.data.value) {
-  const { pending } = await useFetch("/api/event", {
-    method: "GET",
-    key: "events",
-    headers: {
-      authorization: `${liff.getIdToken()}`
-    },
-    lazy: true,
-    pick: ["events"],
-    onResponse: ({ response }) => {
-      events.value = response._data.events;
+const { pending } = await useFetch("/api/event", {
+  method: "GET",
+  key: "events",
+  headers: {
+    authorization: `${liff.getIdToken()}`
+  },
+  lazy: true,
+  onResponse: ({ response }) => {
+    events.value = response._data.events;
+  },
+  getCachedData (key) {
+    if (nuxtApp.payload.data[key]?.events) {
+      events.value = nuxtApp.payload.data[key].events;
     }
-  });
 
-  watchEffect(() => {
-    eventPending.value = pending.value;
-  });
-} else {
-  events.value = cachedEvents.data.value.events;
-}
+    return nuxtApp.payload.data[key];
+  }
+});
+
+watchEffect(() => {
+  eventPending.value = pending.value;
+});
 
 function formatTime (unix: number) {
   return dayjs(unix).utc().local().format("HH:mm a");
