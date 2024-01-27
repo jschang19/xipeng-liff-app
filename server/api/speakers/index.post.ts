@@ -131,6 +131,18 @@ export default defineAuthEventHandler(async (event, user) => {
     };
   }
 
+  // Add coupon reward to new speaker
+  await $fetch("/api/coupons/reward", {
+    method: "POST",
+    headers: {
+      content_type: "application/json",
+      authorization: getRequestHeaders(event).authorization!
+    },
+    body: {
+      participantId: user.uuid
+    }
+  });
+
   return {
     status: "ok"
   };
