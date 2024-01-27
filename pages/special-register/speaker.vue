@@ -175,12 +175,15 @@ const onSubmit = form.handleSubmit(async (values) => {
         description: "請稍後再試"
       });
     },
-    onResponse: ({ response }) => {
+    onResponse: async ({ response }) => {
       if (response.status === 200) {
-        reloadNuxtApp({
-          path: "/profile?fromRegister=1",
-          ttl: 1000 // default 10000
+        refreshNuxtData("user");
+        toast({
+          title: "更新成功",
+          description: "您已經成功成為講者"
         });
+
+        await navigateTo("/", { replace: true });
       }
     }
   });

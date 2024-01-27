@@ -57,9 +57,7 @@ export const defineAuthEventHandler = <T extends EventHandlerRequest, D> (
             algorithms: ["ES256"]
           }) as unknown as LineVerifyResponse;
 
-          const [userData] = await Promise.all([
-            getProfileData(event, verifyResponse.sub)
-          ]);
+          const userData = await getProfileData(event, verifyResponse.sub);
           const user = setUser(userData, verifyResponse);
 
           return handler(event, user);

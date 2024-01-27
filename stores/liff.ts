@@ -33,27 +33,28 @@ export const useLiff = defineStore("liff", () => {
     // upsert user and fetch user data from supabase at same time
     // to keep user data up to date
 
-    const { data: upsertedUser, error } = await useFetch<{
-      profile: Profile;
-    }>("/api/user", {
-      key: "user",
-      method: "GET",
-      headers: {
-        authorization: `${liff.getIDToken()}`
-      },
-      pick: ["profile"]
-    });
+    if (isLoggedIn.value) {
+      await useFetch<{
+        profile: Profile;
+      }>("/api/user", {
+        key: "user",
+        method: "GET",
+        headers: {
+          authorization: `${liff.getIDToken()}`
+        },
+        pick: ["profile"],
+        onResponseError: ({ response }) => {
+          if (response.status === 401) {
+            logout();
+          }
 
-    if (error.value) {
-      if (error.value.statusCode === 401) {
-        logout();
-        return;
-      }
-
-      throw error.value;
+          console.error(response.status, response.statusText);
+        },
+        onResponse: ({ response }) => {
+          user.value = response._data.profile;
+        }
+      });
     }
-
-    user.value = upsertedUser.value!.profile;
   }
 
   function login () {
