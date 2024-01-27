@@ -9,9 +9,11 @@
           大學生講者
         </Button>
       </NuxtLink>
-      <Button class="w-64" variant="secondary">
-        大專院校代表 / 校外贊助夥伴
-      </Button>
+      <NuxtLink to="/special-register/external">
+        <Button class="w-64" variant="secondary">
+          大專院校代表 / 校外贊助夥伴
+        </Button>
+      </NuxtLink>
     </div>
   </div>
 </template>
