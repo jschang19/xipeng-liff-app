@@ -32,12 +32,13 @@ export default defineAuthEventHandler(async (event, user) => {
   }
 
   // check token
-
   const { data: boothToken, error: boothTokenError } = await supabaseService
     .from("booth")
-    .select("token")
+    .select(`id, booth_token(
+        token
+      )`)
     .eq("id", boothId)
-    .eq("token", token)
+    .eq("booth_token.token", token)
     .maybeSingle();
 
   if (boothTokenError) {
