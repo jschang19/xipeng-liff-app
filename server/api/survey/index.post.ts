@@ -120,6 +120,20 @@ export default defineAuthEventHandler(async (event, user) => {
     };
   }
 
+  // add record to draw list
+  const { error: drawError } = await supabaseService.from("draw").insert({
+    user_id: user.uuid
+  });
+
+  if (drawError) {
+    setResponseStatus(event, 500);
+    console.error(drawError);
+    return {
+      status: "error",
+      message: "Failed to insert data"
+    };
+  }
+
   // return status code
   return {
     status: "ok"
