@@ -17,7 +17,6 @@ export default defineAuthEventHandler(async (event, user) => {
     };
   }
 
-  console.log(surveyCount);
   return {
     status: "ok",
     filled: surveyCount! > 0
