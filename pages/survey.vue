@@ -17,8 +17,9 @@
       <form class="space-y-3" @submit="onSubmit">
         <SurveyQuestion v-for="question in questions" :key="question.id" :question="question" :name="question.name" />
         <div class="flex justify-center">
-          <Button type="submit" class="mt-2 w-full">
-            送出
+          <Button type="submit" class="mt-2 w-full" :disabled="isSending">
+            <Loader2 v-if="isSending" class="mr-2 size-4 animate-spin" />
+            {{ isSending ? "送出中" : "送出" }}
           </Button>
         </div>
       </form>
@@ -35,6 +36,7 @@ import type { Question } from "@/types";
 
 const liff = useLiff();
 const isPending = ref(true);
+const isSending = ref(false);
 const { toast } = useToast();
 
 if (liff.user?.type.speaker || liff.user?.type.staff) {
@@ -277,6 +279,7 @@ const { handleSubmit } = useForm({
 });
 
 const onSubmit = handleSubmit(async (values) => {
+  isSending.value = true;
   const data = await $fetch("/api/survey", {
     method: "POST",
     headers: {
@@ -284,6 +287,8 @@ const onSubmit = handleSubmit(async (values) => {
     },
     body: values
   });
+
+  isSending.value = false;
 
   if (data.status !== "ok") {
     console.error(data);
