@@ -32,7 +32,8 @@ import {
   PersonIcon,
   Component2Icon,
   CornersIcon,
-  CardStackIcon
+  CardStackIcon,
+  FileIcon
 } from "@radix-icons/vue";
 const liff = useLiff();
 const isSpeaker = ref(liff.user!.type.speaker);
@@ -67,6 +68,11 @@ const navLinks = ref([
     title: "折價券",
     href: "/coupons",
     icon: CardStackIcon
+  },
+  {
+    title: "會眾問卷",
+    href: "/survey",
+    icon: FileIcon
   }
 ]);
 
