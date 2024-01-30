@@ -33,10 +33,10 @@
                 <DialogTrigger>
                   <div class="flex size-full flex-col justify-between p-1">
                     <NuxtImg
-                      src="https://fakeimg.pl/300x300"
+                      :src="stamp.booth.imageUrl"
                       width="100"
                       height="100"
-                      class="size-full"
+                      class="size-full p-2"
                     />
                   </div>
                 </DialogTrigger>
