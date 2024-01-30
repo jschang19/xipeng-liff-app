@@ -23,7 +23,12 @@ export default defineAuthEventHandler(async (event, user) => {
     }
 
     return {
-      profile: upsertedUser
+      profile: {
+        ...upsertedUser,
+        type: {
+          ...user.type
+        }
+      }
     };
   }
 
@@ -46,21 +51,21 @@ export default defineAuthEventHandler(async (event, user) => {
 
   if (isDifferent) {
     console.log("User data is different, update user data");
-    const { data: upsertedUser, error } = await supabaseService
+    const { error } = await supabaseService
       .from("user")
       .update({
         display_name: user.displayName,
         picture_url: user.pictureUrl,
         email: user.email
       })
-      .eq("line_id", user.userId).single();
+      .eq("line_id", user.userId);
 
     if (error) {
       throw error;
     }
 
     return {
-      profile: upsertedUser
+      profile: user
     };
   }
   // compare user data to see if user data is different
@@ -74,9 +79,7 @@ function checkUserDifferent (user: FullProfile, userData: {
   line_id: string;
   display_name: string;
   picture_url: string | null;
-  email: string | null;
 }): boolean {
   return user.displayName !== userData.display_name ||
-    user.pictureUrl !== userData.picture_url ||
-    user.email !== userData.email;
+    user.pictureUrl !== userData.picture_url;
 }
