@@ -45,9 +45,9 @@ useHead({
 
 const navLinks = ref([
   {
-    title: liff.user?.type.speaker ? "講者資料" : "活動首頁",
+    title: (liff.user?.type.speaker || liff.user?.type.staff) ? "主頁" : "集章冊",
     href: "/",
-    icon: liff.user?.type.speaker ? HomeIcon : Component2Icon
+    icon: (liff.user?.type.speaker || liff.user?.type.staff) ? HomeIcon : Component2Icon
   },
   {
     title: "活動議程",
