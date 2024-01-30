@@ -121,7 +121,7 @@ export default defineAuthEventHandler(async (event, user) => {
   }
 
   // add record to draw list
-  const { error: drawError } = await supabaseService.from("draw").insert({
+  const { error: drawError } = await supabaseService.from("draw_list").insert({
     user_id: user.uuid
   });
 
