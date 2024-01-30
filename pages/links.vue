@@ -45,9 +45,9 @@ useHead({
 
 const navLinks = ref([
   {
-    title: "集章冊",
+    title: liff.user?.type.speaker ? "講者資料" : "活動首頁",
     href: "/",
-    icon: Component2Icon
+    icon: liff.user?.type.speaker ? HomeIcon : Component2Icon
   },
   {
     title: "活動議程",
@@ -84,8 +84,6 @@ if (isSpeaker.value) {
     icon: PersonIcon
   });
 
-  // adjust the link whose title is "集章冊"
-  navLinks.value[0].title = "講者主頁";
-  navLinks.value[0].icon = HomeIcon;
+  navLinks.value = navLinks.value.filter(link => link.title !== "會眾問卷");
 }
 </script>
