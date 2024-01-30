@@ -7,15 +7,15 @@
       <div v-if="eventPending" class="flex h-full items-center justify-center">
         <Loader2 class="size-8 animate-spin" />
       </div>
-      <div v-else class="flex flex-col gap-5">
+      <div v-else class="flex flex-col gap-3 pt-4">
         <div v-for="event in events" :key="event.id">
-          <Card>
+          <Card class="border-none bg-slate-100 shadow-none">
             <CardContent
-              class="flex flex-col gap-2 pt-6"
+              class="flex flex-col gap-3 p-4"
               :class="checkIsOver(event) === true ? 'opacity-40' : ''"
             >
-              <div class="flex gap-2">
-                <Badge variant="secondary">
+              <div class="flex items-center gap-2">
+                <Badge variant="secondary" class="bg-slate-300">
                   {{ event.place }}
                 </Badge>
                 <div class="text-sm text-slate-600">
