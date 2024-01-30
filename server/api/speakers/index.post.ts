@@ -83,8 +83,6 @@ export default defineAuthEventHandler(async (event, user) => {
     };
   }
 
-  console.log(googleFormSpeakerResult);
-
   // Confrim speaker, copy data from google_form_speaker to speaker_profile
   // insert a speaker_id, event_id to `speaker_profile`
   // and upsert to `speaker_profile`
