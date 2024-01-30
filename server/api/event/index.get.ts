@@ -5,7 +5,8 @@ export default defineAuthEventHandler(async (event) => {
   const supabaseService = serverSupabaseServiceRole<Database>(event);
   const { data: eventResult, error: eventError } = await supabaseService
     .from("event")
-    .select("*");
+    .select("*")
+    .order("start_at", { ascending: true });
 
   if (eventError) {
     console.error(eventError);
