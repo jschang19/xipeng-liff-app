@@ -6,9 +6,6 @@
           <h1 class="text-2xl font-bold">
             集章冊
           </h1>
-          <div class="text-base text-gray-500">
-            在下午博覽會訪問學長姐，或到大學攤位完成任務都可以獲得對應的章。<span class="font-medium">每 2 個學長姐章 + 1 個大學攤位章可抽獎一次。</span>
-          </div>
         </div>
       </div>
       <div
@@ -20,13 +17,17 @@
       <FetchError v-else-if="stampError" />
       <div v-else class="flex flex-col space-y-6">
         <div
-          class="xs:grid-cols-2 mx-auto grid grid-cols-3 place-items-center rounded-md border-2"
+          class="xs:grid-cols-2 mx-auto grid grid-cols-3 place-items-center gap-3 rounded-md"
         >
           <Dialog>
             <div
               v-for="stamp in stamps"
               :key="stamp.id"
-              class="flex size-24 items-center justify-center border-2"
+              class="flex size-24 items-center justify-center rounded-xl border-2"
+              :class="{
+                'border-green-200': stamp.type !== 'empty',
+                'border-slate-100 bg-slate-100': stamp.type === 'empty',
+              }"
             >
               <div v-if="stamp.type === 'empty'" />
               <div v-else DialogTrigger @click="handleTriggered(stamp.id)">
@@ -71,7 +72,12 @@
             </DialogContent>
           </Dialog>
         </div>
-        <StampHint v-if="stamps" :stamps="stamps" />
+      </div>
+    </div>
+    <div class="space-y-6">
+      <StampHint v-if="stamps" :stamps="stamps" />
+      <div class="text-sm text-gray-400">
+        在下午博覽會訪問學長姐，或到大學攤位完成任務都可以獲得對應的章。<br><br><span class="font-medium text-gray-500">每 2 個學長姐章 + 1 個大學攤位章可抽獎一次。</span>
       </div>
     </div>
   </div>
