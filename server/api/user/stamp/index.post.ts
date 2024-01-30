@@ -1,7 +1,9 @@
 import { serverSupabaseServiceRole } from "#supabase/server";
 import type { Database } from "~/types/database";
+import type { Stamp } from "~/types";
 
 export default defineAuthEventHandler(async (event, user) => {
+  const STAMP_LIMIT = 9;
   // get target participant id from request body
   // we will get booth id from user id, since the user who scan the qr code is the booth owner
   const { participantId } = await readBody(event);
@@ -73,17 +75,16 @@ export default defineAuthEventHandler(async (event, user) => {
     };
   }
 
-  if (stampCount >= 16) {
+  if (stampCount >= STAMP_LIMIT) {
     setResponseStatus(event, 400);
     return {
       status: "error",
-      message: "Participant already has 16 stamps",
-      displayMessage: "使用者已經有 16 個蓋章囉！"
+      message: "Participant already has 9 stamps",
+      displayMessage: "使用者已經有 9 個蓋章囉！"
     };
   }
 
   if (user.type.speaker) {
-    console.log("speaker");
     // check if the participant already has speaker stamp from the speaker
     const { count: speakerStampCount, error: speakerStampError } =
       await supabaseService
@@ -92,7 +93,6 @@ export default defineAuthEventHandler(async (event, user) => {
         .eq("user_id", participant.id)
         .eq("type", "speaker")
         .eq("scanned_by", user.uuid);
-    console.log(speakerStampCount);
 
     if (speakerStampError || speakerStampCount === null) {
       setResponseStatus(event, 500);
@@ -171,7 +171,7 @@ export default defineAuthEventHandler(async (event, user) => {
   }
 
   const [
-    { error: newStampsError, count: newStampCount },
+    { data: newStamps, error: newStampsError, count: newStampCount },
     { error: couponError, count: couponCount }
   ] = await Promise.all([
     supabaseService
@@ -202,17 +202,38 @@ export default defineAuthEventHandler(async (event, user) => {
     };
   }
 
-  if (newStampCount === 3 && couponCount === 0) {
-    await $fetch("/api/coupons/reward", {
-      method: "POST",
-      headers: {
-        content_type: "application/json",
-        authorization: getRequestHeaders(event).authorization!
-      },
-      body: {
-        participantId: participant.id
+  // 如果 newStampCount 是 3 的倍數
+  if (newStampCount % 3 === 0) {
+    // 如果是第一次達成 3 的倍數，發送 coupon
+    if (newStampCount === 3 && couponCount === 0) {
+      await $fetch("/api/coupons/reward", {
+        method: "POST",
+        headers: {
+          content_type: "application/json",
+          authorization: getRequestHeaders(event).authorization!
+        },
+        body: {
+          participantId: participant.id
+        }
+      });
+    }
+
+    if (checkStampFulfilled(newStamps)) {
+      // insert a record to draw_list
+      const { error: drawListError } = await supabaseService
+        .from("draw_list")
+        .insert({
+          user_id: participant.id
+        });
+
+      if (drawListError) {
+        setResponseStatus(event, 500);
+        return {
+          status: "error",
+          message: "Failed to add draw list"
+        };
       }
-    });
+    }
   }
 
   // return status code
@@ -220,3 +241,30 @@ export default defineAuthEventHandler(async (event, user) => {
     status: "ok"
   };
 });
+
+function checkStampFulfilled (stamps: {
+  type: Stamp["type"];
+}[]) {
+  // 檢查 speaker stamp 與 booth stamp 是否為 2+1
+  const RATIO = 2;
+  const BOOTH_NUM_REQUIRED = 1;
+  const SPEAKER_NUM_REQUIRED = 2;
+  let numBooth = 0;
+  let numSpeaker = 0;
+
+  for (const stamp of stamps) {
+    if (stamp.type === "booth") {
+      numBooth++;
+    }
+
+    if (stamp.type === "speaker") {
+      numSpeaker++;
+    }
+  }
+
+  // check if:
+  // 1. numBooth * 2 = numSpeaker
+  // 2. numBooth >= 1
+  // 3. numSpeaker >= 2
+  return numBooth * RATIO === numSpeaker && numBooth >= BOOTH_NUM_REQUIRED && numSpeaker >= SPEAKER_NUM_REQUIRED;
+}
