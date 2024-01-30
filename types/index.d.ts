@@ -33,4 +33,19 @@ interface FullProfile extends Profile {
   uuid: string;
 }
 
-export { Profile, FullProfile, Event, Stamp };
+interface Option {
+  label: string,
+  value: String
+};
+
+interface Question {
+  id: string,
+  placeholder?: string,
+  name: string,
+  type: "select" | "long-text" | "input",
+  question: string,
+  required: boolean,
+  options? : Array<Option>
+};
+
+export { Profile, FullProfile, Event, Stamp, Question, Option };
