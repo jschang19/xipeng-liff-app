@@ -33,7 +33,8 @@ import {
   Component2Icon,
   CornersIcon,
   CardStackIcon,
-  FileIcon
+  FileIcon,
+  HomeIcon
 } from "@radix-icons/vue";
 const liff = useLiff();
 const isSpeaker = ref(liff.user!.type.speaker);
@@ -82,5 +83,9 @@ if (isSpeaker.value) {
     href: "/profile",
     icon: PersonIcon
   });
+
+  // adjust the link whose title is "集章冊"
+  navLinks.value[0].title = "講者主頁";
+  navLinks.value[0].icon = HomeIcon;
 }
 </script>
