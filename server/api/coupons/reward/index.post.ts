@@ -33,7 +33,6 @@ export default defineEventHandler(async (event) => {
   }
 
   if (count > 0) {
-    setResponseStatus(event, 400);
     return {
       message: "User already has coupons"
     };
@@ -85,8 +84,6 @@ export default defineEventHandler(async (event) => {
         "No coupons inserted, maybe all coupons are expired or reached issue limit"
     };
   }
-
-  console.log(couponData);
 
   // The issued_num will be update by postgreSQL trigger automatically
   const { error: insertError } = await supabaseService
