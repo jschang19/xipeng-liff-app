@@ -49,7 +49,7 @@
         <Alert>
           <AlertTitle>感謝你的分享！</AlertTitle>
           <AlertDescription class="mt-3 space-y-1">
-            <div class="flex items-center">
+            <div>
               你已自動獲得本次活動的折價券，請至
               <NuxtLink to="/coupons">
                 <span class="font-bold underline">
@@ -83,7 +83,6 @@ const { error, pending } = await useFetch<{
   }>(`/api/speakers/${liff.user?.uuid}/events`, {
     key: "speakers-events",
     method: "GET",
-    cache: "force-cache",
     headers: {
       authorization: `${liff.getIdToken()}`
     },
