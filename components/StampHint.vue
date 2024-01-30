@@ -23,10 +23,10 @@
       </div>
       <div class="flex items-center">
         <DotFilledIcon class="mr-1 inline-block size-4" />
-        下一張抽獎券：還差 {{ numToGetLotteryChance.booth }} 個攤位章，{{
+        下一張抽獎券：還差 {{ numToGetLotteryChance.booth }} 個攤位章和 {{
           numToGetLotteryChance.speaker
         }}
-        個講者章
+        個學長姐章
       </div>
     </AlertDescription>
   </Alert>

@@ -37,6 +37,7 @@ export default defineAuthEventHandler(async (event, user) => {
       booth: {
         name: stamp.booth!.name,
         description: stamp.booth!.description,
+        link: stamp.booth!.link,
         imageUrl: stamp.booth!.image_url
       }
     }))
