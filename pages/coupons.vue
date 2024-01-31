@@ -120,6 +120,7 @@
 import { Loader2 } from "lucide-vue-next";
 import dayjs from "dayjs";
 import { useToast } from "~/components/ui/toast";
+
 interface Coupon {
   id: string;
   description: string;
@@ -133,6 +134,10 @@ interface Coupon {
 
 const WAITING_SECONDS = 120;
 const liff = useLiff();
+
+useHead({
+  title: "優惠券"
+});
 
 const { toast } = useToast();
 const userCoupons = ref<Coupon[]>([]);
