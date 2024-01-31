@@ -202,8 +202,8 @@ export default defineAuthEventHandler(async (event, user) => {
     };
   }
 
-  // 如果 newStampCount 是 3 的倍數
-  if (newStampCount % 3 === 0) {
+  // 如果 newStampCount 是 3 的倍數，且大於 0，就發送 coupon
+  if (newStampCount > 0 && newStampCount % 3 === 0) {
     // 如果是第一次達成 3 的倍數，發送 coupon
     if (newStampCount === 3 && couponCount === 0) {
       await $fetch("/api/coupons/reward", {
