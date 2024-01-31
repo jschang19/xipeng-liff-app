@@ -1,6 +1,6 @@
 <template>
   <AppContainer>
-    <main class="w-full flex-1 pb-14">
+    <main class="w-full flex-1 pb-20">
       <slot />
     </main>
     <NavigationBar />
