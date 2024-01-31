@@ -1,5 +1,5 @@
 import { type EventHandler, type EventHandlerRequest, H3Event } from "h3";
-import JwksRsa from "jwks-rsa";
+import jwksClient from "jwks-rsa";
 import jwt from "jsonwebtoken";
 import { serverSupabaseServiceRole } from "#supabase/server";
 import type { Profile } from "~/types";
@@ -34,10 +34,10 @@ export const defineAuthEventHandler = <T extends EventHandlerRequest, D> (
           };
         }
 
-        const client = JwksRsa({
+        const client = jwksClient({
           jwksUri: JWKS_URL,
           requestHeaders: {}, // Optional
-          timeout: 60 * 60 * 1000 // Signing keys will be cached for 1 hour.
+          timeout: 10 * 60 * 1000 // 10 minutes
         });
 
         const decoded = jwt.decode(idToken, { complete: true }); // eslint-disable-line
