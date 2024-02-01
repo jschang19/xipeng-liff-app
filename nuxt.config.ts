@@ -23,7 +23,8 @@ export default defineNuxtConfig({
     "shadcn-nuxt",
     "@nuxtjs/supabase",
     "@nuxt/image",
-    "dayjs-nuxt"
+    "dayjs-nuxt",
+    "nuxt-gtag"
   ],
   runtimeConfig: {
     public: {
@@ -45,5 +46,9 @@ export default defineNuxtConfig({
   },
   nitro: {
     compressPublicAssets: true
+  },
+  gtag: {
+    id: "G-Q47D8WY5JX",
+    loadingStrategy: "async"
   }
 });
