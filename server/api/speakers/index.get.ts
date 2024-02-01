@@ -6,8 +6,8 @@ export default defineAuthEventHandler(async (event, user) => {
   const { data: speakerResult, error: speakerError } = await supabaseService
     .from("event_speaker")
     .select(
-      `
-      *,
+    `
+      speaker_id,
       user(
         id,
         speaker_profile(
@@ -19,7 +19,7 @@ export default defineAuthEventHandler(async (event, user) => {
       )
     `
     )
-    .eq("user.id", user.uuid);
+    .eq("speaker_id", user.uuid);
 
   if (speakerError) {
     console.error(speakerError);
@@ -30,7 +30,7 @@ export default defineAuthEventHandler(async (event, user) => {
     };
   }
 
-  if (!speakerResult || speakerResult.length === 0) {
+  if (!speakerResult || speakerResult.length === 0 || speakerResult[0].user?.speaker_profile === null) {
     return {
       university: null,
       major: null,
