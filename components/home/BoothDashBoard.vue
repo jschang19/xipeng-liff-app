@@ -46,7 +46,7 @@ const liff = useLiff();
 const scannedNumber = ref(0);
 const nuxtApp = useNuxtApp();
 
-const { error, pending } = useFetch("/api/booth/stamp/count", {
+const { error, pending } = await useFetch("/api/booth/stamp/count", {
   headers: {
     authorization: `${liff.getIdToken()}`
   },
