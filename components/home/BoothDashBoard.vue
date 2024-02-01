@@ -4,7 +4,7 @@
       <div class="flex flex-col gap-8 pt-4">
         <div class="mb-4 space-y-3">
           <h1 class="text-center text-2xl font-bold">
-            工作人員主頁
+            協辦單位主頁
           </h1>
         </div>
       </div>
@@ -39,7 +39,7 @@ import useQrcode from "~/compoables/useQrcode";
 
 const { handleScanCode } = useQrcode();
 useHead({
-  title: "工作人員主頁"
+  title: "協辦單位主頁"
 });
 
 const liff = useLiff();
