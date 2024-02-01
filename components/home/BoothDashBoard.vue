@@ -60,7 +60,7 @@ const { error, pending } = await useFetch("/api/booth/stamp/count", {
       scannedNumber.value = nuxtApp.payload.data[key].scanned;
     }
 
-    return nuxtApp.payload.data[key].scanned;
+    return nuxtApp.payload.data[key];
   }
 });
 
