@@ -1,6 +1,5 @@
 import { type EventHandler, type EventHandlerRequest, H3Event } from "h3";
-import jwksClient from "jwks-rsa";
-import jwt from "jsonwebtoken";
+import { jwtVerify, createRemoteJWKSet } from "jose";
 import { serverSupabaseServiceRole } from "#supabase/server";
 import type { Profile } from "~/types";
 import type { Database } from "~/types/database";
@@ -20,7 +19,7 @@ export const defineAuthEventHandler = <T extends EventHandlerRequest, D> (
   handler: (event: H3Event, user: FullProfile) => Promise<D> | D
 ): EventHandler<T, D> =>
     defineEventHandler<T>(async (event) => {
-      const JWKS_URL = "https://api.line.me/oauth2/v2.1/certs";
+      const JWKS = createRemoteJWKSet(new URL("https://api.line.me/oauth2/v2.1/certs"));
 
       try {
         // get header  authorization
@@ -34,28 +33,12 @@ export const defineAuthEventHandler = <T extends EventHandlerRequest, D> (
           };
         }
 
-        const client = jwksClient({
-          jwksUri: JWKS_URL,
-          requestHeaders: {}, // Optional
-          timeout: 10 * 60 * 1000 // 10 minutes
-        });
-
-        const decoded = jwt.decode(idToken, { complete: true }); // eslint-disable-line
-
-        if (!decoded?.header) {
-          setResponseStatus(event, 401);
-          return {
-            status: "error",
-            message: "Empty token"
-          };
-        }
-
-        const signinKey = await client.getSigningKey(decoded.header.kid);
-
         try {
-          const verifyResponse = jwt.verify(idToken, signinKey.getPublicKey(), { // eslint-disable-line
+          console.log(JWKS);
+
+          const { payload: verifyResponse } = await jwtVerify(idToken, JWKS, {
             algorithms: ["ES256"]
-          }) as unknown as LineVerifyResponse;
+          }) as unknown as { payload: LineVerifyResponse };
 
           const userData = await getProfileData(event, verifyResponse.sub);
           const user = setUser(userData, verifyResponse);
