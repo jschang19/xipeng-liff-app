@@ -58,8 +58,6 @@ export default defineEventHandler(async (event) => {
     };
   }
 
-  console.log(defaultCoupons);
-
   const couponData: {
     coupon_id: string;
     user_id: string;

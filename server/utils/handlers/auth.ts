@@ -34,8 +34,6 @@ export const defineAuthEventHandler = <T extends EventHandlerRequest, D> (
         }
 
         try {
-          console.log(JWKS);
-
           const { payload: verifyResponse } = await jwtVerify(idToken, JWKS, {
             algorithms: ["ES256"]
           }) as unknown as { payload: LineVerifyResponse };

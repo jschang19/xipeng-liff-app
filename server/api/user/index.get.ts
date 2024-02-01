@@ -50,7 +50,6 @@ export default defineAuthEventHandler(async (event, user) => {
   const isDifferent = checkUserDifferent(user, userData);
 
   if (isDifferent) {
-    console.log("User data is different, update user data");
     const { error } = await supabaseService
       .from("user")
       .update({

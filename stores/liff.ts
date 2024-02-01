@@ -12,9 +12,6 @@ export const useLiff = defineStore("liff", () => {
   // Initialize LIFF SDK
   async function init () {
     if (!liffId) {
-      console.log(liffId);
-      console.log(runtimeConfig.public);
-      console.log(process.env.LIFF_ID);
       throw new Error("Please set LIFF_ID in .env file");
     }
 

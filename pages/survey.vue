@@ -82,7 +82,6 @@ async function checkUserFilled () {
   });
 
   watch(pending, (value) => {
-    console.log(value);
     isPending.value = value;
   });
 }
