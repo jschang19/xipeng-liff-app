@@ -38,14 +38,14 @@
           <div class="text-lg font-bold">
             講者
           </div>
-          <div class="grid grid-cols-4 gap-1 py-3">
+          <div class="grid grid-cols-5 gap-1 py-3">
             <div
               v-show="event.speakers.length === 0"
               class="text-center text-sm text-gray-500"
             >
               目前沒有講者資料
             </div>
-            <div v-for="speaker in event.speakers" :key="speaker.name" class="col-span-4">
+            <div v-for="speaker in event.speakers" :key="speaker.name">
               <Dialog>
                 <DialogTrigger>
                   <div class="flex flex-col items-center space-y-2">
