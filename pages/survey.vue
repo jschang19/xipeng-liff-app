@@ -37,15 +37,13 @@ import type { Question } from "@/types";
 const liff = useLiff();
 const isPending = ref(true);
 const isSending = ref(false);
+const SPEAKER_GOOGLE_FORM = "https://forms.gle/wLUUhqKwGwL5ZkuM7?openExternalBrowser=1";
+const STAFF_GOOGLE_FORM = "https://forms.gle/d6Zwzqf6TMU7aA8u8?openExternalBrowser=1";
 const { toast } = useToast();
 
 if (liff.user?.type.speaker || liff.user?.type.staff) {
-  onMounted(async () => {
-    toast({
-      title: "請填寫其他問卷",
-      description: "這份問卷僅供一般會眾填寫"
-    });
-    await navigateTo("/");
+  navigateTo(liff.user?.type.speaker ? SPEAKER_GOOGLE_FORM : STAFF_GOOGLE_FORM, {
+    replace: true
   });
 } else {
   await checkUserFilled();

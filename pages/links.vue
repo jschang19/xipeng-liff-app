@@ -71,7 +71,7 @@ const navLinks = ref([
     icon: CardStackIcon
   },
   {
-    title: "會眾問卷",
+    title: "回饋問卷",
     href: "/survey",
     icon: FileIcon
   }
@@ -83,7 +83,5 @@ if (isSpeaker.value) {
     href: "/profile",
     icon: PersonIcon
   });
-
-  navLinks.value = navLinks.value.filter(link => link.title !== "會眾問卷");
 }
 </script>
