@@ -43,7 +43,7 @@ const { toast } = useToast();
 
 if (liff.user?.type.speaker || liff.user?.type.staff) {
   navigateTo(liff.user?.type.speaker ? SPEAKER_GOOGLE_FORM : STAFF_GOOGLE_FORM, {
-    replace: true
+    external: true // Open external url
   });
 } else {
   await checkUserFilled();
