@@ -39,49 +39,47 @@
             講者
           </div>
           <div class="grid grid-cols-4 gap-1 py-3">
-            <div class="col-span-4">
-              <div
-                v-show="event.speakers.length === 0"
-                class="text-center text-sm text-gray-500"
-              >
-                目前沒有講者資料
-              </div>
-              <div v-for="speaker in event.speakers" :key="speaker.name">
-                <Dialog>
-                  <DialogTrigger>
-                    <div class="flex flex-col items-center space-y-2">
-                      <Avatar class="size-12">
-                        <AvatarImage :src="speaker.pictureUrl" />
-                        <AvatarFallback>
-                          {{ speaker.name.substring(0, 1) }}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div class="text-sm">
+            <div
+              v-show="event.speakers.length === 0"
+              class="text-center text-sm text-gray-500"
+            >
+              目前沒有講者資料
+            </div>
+            <div v-for="speaker in event.speakers" :key="speaker.name" class="col-span-4">
+              <Dialog>
+                <DialogTrigger>
+                  <div class="flex flex-col items-center space-y-2">
+                    <Avatar class="size-12">
+                      <AvatarImage :src="speaker.pictureUrl" />
+                      <AvatarFallback>
+                        {{ speaker.name.substring(0, 1) }}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div class="text-sm">
+                      {{ speaker.name }}
+                    </div>
+                  </div>
+                </DialogTrigger>
+                <DialogContent>
+                  <div class="space-y-1">
+                    <DialogTitle>
+                      <div class="text-lg font-bold">
                         {{ speaker.name }}
                       </div>
-                    </div>
-                  </DialogTrigger>
-                  <DialogContent>
-                    <div class="space-y-1">
-                      <DialogTitle>
-                        <div class="text-lg font-bold">
-                          {{ speaker.name }}
-                        </div>
-                      </DialogTitle>
-                      <DialogDescription class="space-y-2">
-                        <div class="text-sm text-slate-500">
-                          {{ speaker.universityName }} {{ speaker.majorName }}
-                        </div>
-                        <div class="text-sm text-black">
-                          {{
-                            speaker.bio ?? "這位講者很神秘，沒有留下任何自介"
-                          }}
-                        </div>
-                      </DialogDescription>
-                    </div>
-                  </DialogContent>
-                </Dialog>
-              </div>
+                    </DialogTitle>
+                    <DialogDescription class="space-y-2">
+                      <div class="text-sm text-slate-500">
+                        {{ speaker.universityName }} {{ speaker.majorName }}
+                      </div>
+                      <div class="text-sm text-black">
+                        {{
+                          speaker.bio ?? "這位講者很神秘，沒有留下任何自介"
+                        }}
+                      </div>
+                    </DialogDescription>
+                  </div>
+                </DialogContent>
+              </Dialog>
             </div>
           </div>
           <div class="space-y-2">
