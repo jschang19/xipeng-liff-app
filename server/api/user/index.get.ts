@@ -28,7 +28,8 @@ export default defineAuthEventHandler(async (event, user) => {
         userId: user.userId,
         displayName: user.displayName,
         pictureUrl: user.pictureUrl,
-        email: user.email
+        email: user.email,
+        type: user.type
       }
     };
   }
@@ -70,7 +71,8 @@ export default defineAuthEventHandler(async (event, user) => {
         userId: user.userId,
         displayName: user.displayName,
         pictureUrl: user.pictureUrl,
-        email: user.email
+        email: user.email,
+        type: user.type
       }
     };
   }
@@ -82,7 +84,8 @@ export default defineAuthEventHandler(async (event, user) => {
       userId: user.userId,
       displayName: user.displayName,
       pictureUrl: user.pictureUrl,
-      email: user.email
+      email: user.email,
+      type: user.type
     }
   };
 });
