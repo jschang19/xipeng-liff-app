@@ -13,9 +13,6 @@ export default defineAuthEventHandler(async (event, user) => {
     .select(
       `
       *,
-      user (
-        line_id
-      ),
       coupon (
         description,
         expire_at,
@@ -30,7 +27,7 @@ export default defineAuthEventHandler(async (event, user) => {
         count: "exact"
       }
     )
-    .eq("user.line_id", user.userId)
+    .eq("user_id", user.uuid)
     .order("id");
 
   if (error) {
