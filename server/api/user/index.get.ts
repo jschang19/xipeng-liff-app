@@ -24,10 +24,11 @@ export default defineAuthEventHandler(async (event, user) => {
 
     return {
       profile: {
-        ...upsertedUser,
-        type: {
-          ...user.type
-        }
+        uuid: upsertedUser!.id,
+        userId: user.userId,
+        displayName: user.displayName,
+        pictureUrl: user.pictureUrl,
+        email: user.email
       }
     };
   }
@@ -64,13 +65,25 @@ export default defineAuthEventHandler(async (event, user) => {
     }
 
     return {
-      profile: user
+      profile: {
+        uuid: user.uuid,
+        userId: user.userId,
+        displayName: user.displayName,
+        pictureUrl: user.pictureUrl,
+        email: user.email
+      }
     };
   }
   // compare user data to see if user data is different
 
   return {
-    profile: user
+    profile: {
+      uuid: user.uuid,
+      userId: user.userId,
+      displayName: user.displayName,
+      pictureUrl: user.pictureUrl,
+      email: user.email
+    }
   };
 });
 
