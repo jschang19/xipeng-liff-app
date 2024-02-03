@@ -42,7 +42,6 @@ export const useLiff = defineStore("liff", () => {
         headers: {
           authorization: `${liff.getIDToken()}`
         },
-        pick: ["profile"],
         onResponseError: ({ response }) => {
           if (response.status === 401) {
             logout();
@@ -51,7 +50,9 @@ export const useLiff = defineStore("liff", () => {
           console.error(response.status, response.statusText);
         },
         onResponse: ({ response }) => {
-          user.value = response._data.profile;
+          if (response.status === 200) {
+            user.value = response._data.profile;
+          }
         }
       });
     }
