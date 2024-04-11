@@ -30,7 +30,7 @@
   },
   "dependencies": {
     "@heroicons/vue": "^2.1.1",
-    "@jschang19/ntu-studentid-lookup": "^2.0.2",
+    "@nuxt/content": "^2.12.1",
     "@nuxt/image": "^1.3.0",
     "@pinia/nuxt": "^0.5.1",
     "@popperjs/core": "^2.11.8",
